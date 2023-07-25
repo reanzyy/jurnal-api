@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\SchoolYearsController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentDraftController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +36,9 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
-
-    Route::apiResource('students', StudentController::class);
 });
+Route::apiResource('students', StudentController::class);
+Route::apiResource('school-years', SchoolYearsController::class);
+Route::apiResource('classrooms', ClassroomController::class);
+Route::apiResource('schools', SchoolController::class);
+Route::apiResource('student-drafts', StudentDraftController::class);

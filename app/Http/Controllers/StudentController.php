@@ -15,10 +15,21 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::latest()->get();
-        return response()->json([
-            "data" => $students,
-        ]);
+        $students = Student::with('classroom', 'schoolYear')->latest()->get();
+
+        if ($students->isEmpty()) {
+            return response()->json([
+                "error" => false,
+                "message" => "Belum ada data siswa",
+                "data" => null,
+            ]);
+        } else {
+            return response()->json([
+                "error" => false,
+                "message" => "Success",
+                "data" => $students,
+            ]);
+        }
     }
 
     /**
@@ -30,12 +41,12 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make(request()->all(), [
-            'nis' => 'required',
+            'identity' => 'required',
             'name' => 'required',
             'phone' => 'required',
             'birth_date' => 'required',
             'birth_place' => 'required',
-            'region' => 'required',
+            'religion' => 'required',
             'gender' => 'required',
             'photo' => 'required',
             'address' => 'required',
@@ -43,36 +54,49 @@ class StudentController extends Controller
             'parent_name' => 'required',
             'parent_phone' => 'required',
             'parent_address' => 'required',
+            'school_year_id' => 'required',
+            'classroom_id' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->messages());
         }
 
-        $user = auth()->user();
+        if (auth()->check()) {
+            $user = auth()->user()->id;
 
-        $student = $user->students()->create([
-            'nis' => $request->nis,
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'birth_date' => $request->birth_date,
-            'birth_place' => $request->birth_place,
-            'region' => $request->region,
-            'gender' => $request->gender,
-            'photo' => $request->photo,
-            'address' => $request->address,
-            'blood_type' => $request->blood_type,
-            'parent_name' => $request->parent_name,
-            'parent_phone' => $request->parent_phone,
-            'parent_address' => $request->parent_address,
-            'user_id' => auth()->user()->id,
-        ]);
+            $student = Student::create([
+                'identity' => $request->identity,
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'birth_date' => $request->birth_date,
+                'birth_place' => $request->birth_place,
+                'religion' => $request->religion,
+                'gender' => $request->gender,
+                'photo' => $request->photo,
+                'address' => $request->address,
+                'blood_type' => $request->blood_type,
+                'parent_name' => $request->parent_name,
+                'parent_phone' => $request->parent_phone,
+                'parent_address' => $request->parent_address,
+                'school_year_id' => $request->school_year_id,
+                'classroom_id' => $request->classroom_id,
+                'user_id' => $user,
+            ]);
 
-        return response()->json([
-            "message" => 'Data siswa berhasil ditambahkan',
-            "data" => $student
-        ]);
+            return response()->json([
+                "error" => false,
+                "message" => 'Success',
+                "data" => $student
+            ]);
+        } else {
+            return response()->json([
+                "error" => true,
+                "message" => 'User not authenticated.'
+            ]);
+        }
     }
+
 
     /**
      * Display the specified resource.
@@ -83,8 +107,14 @@ class StudentController extends Controller
     public function show($id)
     {
         $student = Student::find($id);
+
+        if (!$student) {
+            return response()->json(['message' => 'Student not found'], 404);
+        }
+
         return response()->json([
-            'message' => 'Data berhasil ditampilkan',
+            "error" => false,
+            "message" => 'Success',
             'data' => $student
         ]);
     }
@@ -99,12 +129,12 @@ class StudentController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make(request()->all(), [
-            'nis' => 'required',
+            'identity' => 'required',
             'name' => 'required',
             'phone' => 'required',
             'birth_date' => 'required',
             'birth_place' => 'required',
-            'region' => 'required',
+            'religion' => 'required',
             'gender' => 'required',
             'photo' => 'required',
             'address' => 'required',
@@ -124,41 +154,38 @@ class StudentController extends Controller
             return response()->json(['message' => 'Student not found'], 404);
         }
 
-        $student->nis = $request->nis;
-        $student->name = $request->name;
-        $student->phone = $request->phone;
-        $student->birth_date = $request->birth_date;
-        $student->birth_place = $request->birth_place;
-        $student->region = $request->region;
-        $student->gender = $request->gender;
-        $student->photo = $request->photo;
-        $student->address = $request->address;
-        $student->blood_type = $request->blood_type;
-        $student->parent_name = $request->parent_name;
-        $student->parent_phone = $request->parent_phone;
-        $student->parent_address = $request->parent_address;
-        $student->save();
+        if (auth()->check()) {
+            auth()->user()->id;
 
-        // $student = Student::where('id', $id)->update([
-        //     'nis' => $request->nis,
-        //     'name' => $request->name,
-        //     'phone' => $request->phone,
-        //     'birth_date' => $request->birth_date,
-        //     'birth_place' => $request->birth_place,
-        //     'region' => $request->region,
-        //     'gender' => $request->gender,
-        //     'photo' => $request->photo,
-        //     'address' => $request->address,
-        //     'blood_type' => $request->blood_type,
-        //     'parent_name' => $request->parent_name,
-        //     'parent_phone' => $request->parent_phone,
-        //     'parent_address' => $request->parent_address,
-        // ]);
+            $student->update([
+                'identity' => $request->identity,
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'birth_date' => $request->birth_date,
+                'birth_place' => $request->birth_place,
+                'religion' => $request->religion,
+                'gender' => $request->gender,
+                'photo' => $request->photo,
+                'address' => $request->address,
+                'blood_type' => $request->blood_type,
+                'parent_name' => $request->parent_name,
+                'parent_phone' => $request->parent_phone,
+                'parent_address' => $request->parent_address,
+                'school_year_id' => $request->school_year_id,
+                'classroom_id' => $request->classroom_id,
+            ]);
 
-        return response()->json([
-            "message" => 'Data siswa berhasil diupdate',
-            "data" => $student
-        ]);
+            return response()->json([
+                "error" => false,
+                "message" => 'Success',
+                "data" => $student
+            ]);
+        } else {
+            return response()->json([
+                "error" => true,
+                "message" => 'User not authenticated.'
+            ]);
+        }
     }
 
     /**
@@ -175,11 +202,21 @@ class StudentController extends Controller
             return response()->json(['message' => 'Student not found'], 404);
         }
 
-        $student->delete();
+        if (auth()->check()) {
+            auth()->user()->id;
 
-        return response()->json([
-            "message" => 'Data siswa berhasil dihapus',
-            "data" => $student
-        ]);
+            $student->delete();
+
+            return response()->json([
+                "error" => false,
+                "message" => 'Success',
+                "data" => $student
+            ]);
+        } else {
+            return response()->json([
+                "error" => true,
+                "message" => "User not authenticated."
+            ]);
+        }
     }
 }
