@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\InternshipRuleController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,3 +36,14 @@ Route::group([
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
 });
+
+Route::resource('companies', CompanyController::class)->except(['create', 'edit']);
+// Route::get('/companies', [CompanyController::class, 'index']);
+// Route::post('/companies', [CompanyController::class, 'store']);
+// Route::get('/companies', [CompanyController::class, 'show']);
+// Route::put('/companies/{id}', [CompanyController::class, 'update']);
+// Route::delete('/companies/{id}', [CompanyController::class, 'destroy']);
+
+Route::get('/internship-rules', [InternshipRuleController::class, 'index']);
+
+Route::resource('notifications', NotificationController::class)->except(['create', 'edit']);
