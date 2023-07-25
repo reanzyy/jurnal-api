@@ -7,28 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Company extends Model
 {
     protected $fillable = [
-        'internship_id',
-        'since',
-        'sectors',
-        'services',
+        'id',
+        'name',
         'address',
-        'telephone',
-        'email',
-        'website',
-        'director',
-        'director_phone',
-        'advisors',
-        'structure',
+        'director'
     ];
-
-    protected $casts = [
-        'sectors' => 'array',
-        'services' => 'array',
-        'advisors' => 'array',
-    ];
-
-    public function internship()
-    {
-        return $this->belongsTo(Internship::class);
-    }
 }
