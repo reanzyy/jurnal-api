@@ -1,10 +1,14 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+<<<<<<< HEAD
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\InternshipRuleController;
 use App\Http\Controllers\NotificationController;
+=======
+use App\Http\Controllers\StudentController;
+>>>>>>> c1af1144e17a2da64e1cf6078307b0b597a8b206
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +39,8 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
+
+    Route::apiResource('students', StudentController::class);
 });
 
 Route::resource('companies', CompanyController::class)->except(['create', 'edit']);
