@@ -17,4 +17,3 @@ class InternshipCompanyRule extends Model
         return $this->belongsTo(Internship::class);
     }
 }
-
