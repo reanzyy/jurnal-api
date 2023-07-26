@@ -18,6 +18,9 @@ use App\Http\Controllers\InternshipEquipmentController;
 use App\Http\Controllers\InternshipSuggestionController;
 use App\Http\Controllers\InternshipCompanyEmployeeController;
 use App\Http\Controllers\InternshipCompanyJobTitleController;
+use App\Http\Controllers\InternshipCompanyRuleController;
+use App\Models\School;
+use App\Models\SchoolAdvisor;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,11 +59,12 @@ Route::apiResource('student-drafts', StudentDraftController::class);
 Route::apiResource('companies', CompanyController::class);
 Route::apiResource('notifications', NotificationController::class);
 Route::apiResource('company_advisors', CompanyAdvisorController::class);
+Route::apiResource('school_advisors', SchoolAdvisorController::class);
 Route::apiResource('internships', InternshipController::class);
 Route::apiResource('internship_company_job_titles', InternshipCompanyJobTitleController::class);
 Route::apiResource('internship_company_employee', InternshipCompanyEmployeeController::class);
 Route::apiResource('internship_journal', InternshipJournalController::class);
-Route::apiResource('internship_journal', InternshipJournalController::class);
 Route::apiResource('internship_suggestion', InternshipSuggestionController::class);
 Route::apiResource('internship_equipment', InternshipEquipmentController::class);
 Route::apiResource('internship_rules', InternshipRuleController::class);
+Route::apiResource('internship_company_rules', InternshipCompanyRuleController::class);

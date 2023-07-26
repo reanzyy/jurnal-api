@@ -78,7 +78,17 @@ class StudentDraftController extends Controller
      */
     public function show($id)
     {
-        //
+        $student_draft = StudentDraft::find($id);
+
+        if (!$student_draft) {
+            return response()->json(['message' => 'Student Draft not found'], 404);
+        }
+
+        return response()->json([
+            "error" => false,
+            "message" => 'Success',
+            'data' => $student_draft
+        ]);
     }
 
     /**

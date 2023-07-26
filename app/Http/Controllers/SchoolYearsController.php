@@ -78,7 +78,17 @@ class SchoolYearsController extends Controller
      */
     public function show($id)
     {
-        //
+        $school_year = SchoolYear::find($id);
+
+        if (!$school_year) {
+            return response()->json(['message' => 'School Year not found'], 404);
+        }
+
+        return response()->json([
+            "error" => false,
+            "message" => 'Success',
+            'data' => $school_year
+        ]);
     }
 
     /**
