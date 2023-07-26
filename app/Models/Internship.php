@@ -17,7 +17,7 @@ class Internship extends Model
 
     public function schoolYear()
     {
-        return $this->belongsTo(SchoolYear::class);
+        return $this->hasMany(schoolYear::class, 'id', 'school_year_id');
     }
 
     public function student()
