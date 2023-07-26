@@ -68,4 +68,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Student::class);
     }
+
+    public static function findById($identity)
+    {
+        return self::find($identity);
+    }
 }

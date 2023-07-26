@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -19,32 +20,21 @@ class AuthController extends Controller
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
-    public function register(Request $request)
+    public function register(Request $request, $identity)
     {
-        $validator = Validator::make(request()->all(), [
-            'username' => 'required',
-            'password' => 'required'
-            // 'email' => 'required|email|unique:users',
-        ]);
+        // The $identity parameter will hold the value from the URL
 
+        $results = Student::where('identity', 'LIKE', '%' . $identity . '%')->get();
 
-        if ($validator->fails()) {
-            return response()->json($validator->messages());
+        if ($results->isEmpty()) {
+            // Handle if data is not found
+            return response()->json(['message' => 'User not found'], 404);
         }
 
-        $user = new User;
-        $user->username = $request->username;
-        // $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->save();
-
-
-        if ($user) {
-            return response()->json('Pendaftaran Berhasil');
-        } else {
-            return response()->json('Pendaftaran Gagal');
-        }
+        // Process the found query data
+        return response()->json($results);
     }
+
 
     /**
      * Get a JWT via given credentials.
