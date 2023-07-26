@@ -10,20 +10,26 @@ class NotificationController extends Controller
     public function index()
     {
         $notifications = Notification::all();
-        return response()->json(['error' => false, 'message' => 'success', 'data' => $notifications]);
+        return response()->json(["error" => false, "message" => "success", "data" => $notifications]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'date' => 'required|date',
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            "date" => "required|date",
+            "title" => "required|string|max:255",
+            "description" => "required|string",
         ]);
 
-        $notification = Notification::create($data);
+        if (auth()->check()) {
+            auth()->user()->id;
+            $notification = Notification::create($data);
+    
+            return response()->json(["error" => false, "message" => "Notification created successfully", "data" => $notification]);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"]);
+        }
 
-        return response()->json(['error' => false, 'message' => 'Notification created successfully', 'data' => $notification]);
     }
 
     public function show($id)
@@ -31,29 +37,29 @@ class NotificationController extends Controller
         $notification = Notification::find($id);
 
         if (!$notification) {
-            return response()->json(['error' => true, 'message' => 'Notification not found'], 404);
+            return response()->json(["error" => true, "message" => "Notification not found"], 404);
         }
 
-        return response()->json(['error' => false, 'message' => 'success', 'data' => $notification]);
+        return response()->json(["error" => false, "message" => "success", "data" => $notification]);
     }
 
     public function update(Request $request, $id)
     {
         $data = $request->validate([
-            'date' => 'date',
-            'title' => 'string|max:255',
-            'description' => 'string',
+            "date" => "date",
+            "title" => "string|max:255",
+            "description" => "string",
         ]);
 
         $notification = Notification::find($id);
 
         if (!$notification) {
-            return response()->json(['error' => true, 'message' => 'Notification not found'], 404);
+            return response()->json(["error" => true, "message" => "Notification not found"], 404);
         }
 
         $notification->update($data);
 
-        return response()->json(['error' => false, 'message' => 'Notification updated successfully', 'data' => $notification]);
+        return response()->json(["error" => false, "message" => "Notification updated successfully", "data" => $notification]);
     }
 
     public function destroy($id)
@@ -61,12 +67,11 @@ class NotificationController extends Controller
         $notification = Notification::find($id);
 
         if (!$notification) {
-            return response()->json(['error' => true, 'message' => 'Notification not found'], 404);
+            return response()->json(["error" => true, "message" => "Notification not found"], 404);
         }
 
         $notification->delete();
 
-        return response()->json(['error' => false, 'message' => 'Notification deleted successfully']);
+        return response()->json(["error" => false, "message" => "Notification deleted successfully"]);
     }
 }
-

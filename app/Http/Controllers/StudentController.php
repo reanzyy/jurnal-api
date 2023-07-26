@@ -15,7 +15,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::with('classroom', 'schoolYear')->latest()->get();
+        $students = Student::with("classroom", "schoolYear")->latest()->get();
 
         if ($students->isEmpty()) {
             return response()->json([
@@ -41,21 +41,21 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make(request()->all(), [
-            'identity' => 'required',
-            'name' => 'required',
-            'phone' => 'required',
-            'birth_date' => 'required',
-            'birth_place' => 'required',
-            'religion' => 'required',
-            'gender' => 'required',
-            'photo' => 'required',
-            'address' => 'required',
-            'blood_type' => 'required',
-            'parent_name' => 'required',
-            'parent_phone' => 'required',
-            'parent_address' => 'required',
-            'school_year_id' => 'required',
-            'classroom_id' => 'required',
+            "identity" => "required",
+            "name" => "required",
+            "phone" => "required",
+            "birth_date" => "required",
+            "birth_place" => "required",
+            "religion" => "required",
+            "gender" => "required",
+            "photo" => "required",
+            "address" => "required",
+            "blood_type" => "required",
+            "parent_name" => "required",
+            "parent_phone" => "required",
+            "parent_address" => "required",
+            "school_year_id" => "required",
+            "classroom_id" => "required",
         ]);
 
         if ($validator->fails()) {
@@ -66,33 +66,33 @@ class StudentController extends Controller
             $user = auth()->user()->id;
 
             $student = Student::create([
-                'identity' => $request->identity,
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'birth_date' => $request->birth_date,
-                'birth_place' => $request->birth_place,
-                'religion' => $request->religion,
-                'gender' => $request->gender,
-                'photo' => $request->photo,
-                'address' => $request->address,
-                'blood_type' => $request->blood_type,
-                'parent_name' => $request->parent_name,
-                'parent_phone' => $request->parent_phone,
-                'parent_address' => $request->parent_address,
-                'school_year_id' => $request->school_year_id,
-                'classroom_id' => $request->classroom_id,
-                'user_id' => $user,
+                "identity" => $request->identity,
+                "name" => $request->name,
+                "phone" => $request->phone,
+                "birth_date" => $request->birth_date,
+                "birth_place" => $request->birth_place,
+                "religion" => $request->religion,
+                "gender" => $request->gender,
+                "photo" => $request->photo,
+                "address" => $request->address,
+                "blood_type" => $request->blood_type,
+                "parent_name" => $request->parent_name,
+                "parent_phone" => $request->parent_phone,
+                "parent_address" => $request->parent_address,
+                "school_year_id" => $request->school_year_id,
+                "classroom_id" => $request->classroom_id,
+                "user_id" => $user,
             ]);
 
             return response()->json([
                 "error" => false,
-                "message" => 'Success',
+                "message" => "Student created successfully",
                 "data" => $student
             ]);
         } else {
             return response()->json([
                 "error" => true,
-                "message" => 'User not authenticated.'
+                "message" => "User not authenticated."
             ]);
         }
     }
@@ -109,13 +109,13 @@ class StudentController extends Controller
         $student = Student::find($id);
 
         if (!$student) {
-            return response()->json(['message' => 'Student not found'], 404);
+            return response()->json(["error" => true, "message" => "Student not found"], 404);
         }
 
         return response()->json([
             "error" => false,
-            "message" => 'Success',
-            'data' => $student
+            "message" => "Success",
+            "data" => $student
         ]);
     }
 
@@ -129,19 +129,19 @@ class StudentController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make(request()->all(), [
-            'identity' => 'required',
-            'name' => 'required',
-            'phone' => 'required',
-            'birth_date' => 'required',
-            'birth_place' => 'required',
-            'religion' => 'required',
-            'gender' => 'required',
-            'photo' => 'required',
-            'address' => 'required',
-            'blood_type' => 'required',
-            'parent_name' => 'required',
-            'parent_phone' => 'required',
-            'parent_address' => 'required',
+            "identity" => "required",
+            "name" => "required",
+            "phone" => "required",
+            "birth_date" => "required",
+            "birth_place" => "required",
+            "religion" => "required",
+            "gender" => "required",
+            "photo" => "required",
+            "address" => "required",
+            "blood_type" => "required",
+            "parent_name" => "required",
+            "parent_phone" => "required",
+            "parent_address" => "required",
         ]);
 
         if ($validator->fails()) {
@@ -151,39 +151,39 @@ class StudentController extends Controller
         $student = Student::find($id);
 
         if (!$student) {
-            return response()->json(['message' => 'Student not found'], 404);
+            return response()->json(["error" => true, "message" => "Student not found"], 404);
         }
 
         if (auth()->check()) {
             auth()->user()->id;
 
             $student->update([
-                'identity' => $request->identity,
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'birth_date' => $request->birth_date,
-                'birth_place' => $request->birth_place,
-                'religion' => $request->religion,
-                'gender' => $request->gender,
-                'photo' => $request->photo,
-                'address' => $request->address,
-                'blood_type' => $request->blood_type,
-                'parent_name' => $request->parent_name,
-                'parent_phone' => $request->parent_phone,
-                'parent_address' => $request->parent_address,
-                'school_year_id' => $request->school_year_id,
-                'classroom_id' => $request->classroom_id,
+                "identity" => $request->identity,
+                "name" => $request->name,
+                "phone" => $request->phone,
+                "birth_date" => $request->birth_date,
+                "birth_place" => $request->birth_place,
+                "religion" => $request->religion,
+                "gender" => $request->gender,
+                "photo" => $request->photo,
+                "address" => $request->address,
+                "blood_type" => $request->blood_type,
+                "parent_name" => $request->parent_name,
+                "parent_phone" => $request->parent_phone,
+                "parent_address" => $request->parent_address,
+                "school_year_id" => $request->school_year_id,
+                "classroom_id" => $request->classroom_id,
             ]);
 
             return response()->json([
                 "error" => false,
-                "message" => 'Success',
+                "message" => "Student updated successfully",
                 "data" => $student
             ]);
         } else {
             return response()->json([
                 "error" => true,
-                "message" => 'User not authenticated.'
+                "message" => "User not authenticated."
             ]);
         }
     }
@@ -199,7 +199,7 @@ class StudentController extends Controller
         $student = Student::find($id);
 
         if (!$student) {
-            return response()->json(['message' => 'Student not found'], 404);
+            return response()->json(["error" => true, "message" => "Student not found"], 404);
         }
 
         if (auth()->check()) {
@@ -209,8 +209,7 @@ class StudentController extends Controller
 
             return response()->json([
                 "error" => false,
-                "message" => 'Success',
-                "data" => $student
+                "message" => "Student deleted successfully",
             ]);
         } else {
             return response()->json([

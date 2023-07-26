@@ -10,20 +10,26 @@ class InternshipRuleController extends Controller
     public function index()
     {
         $internshipRules = InternshipRule::all();
-        return response()->json(['message' => 'Success', 'data' => $internshipRules]);
+        return response()->json(["message" => "Success", "data" => $internshipRules]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'school_year_id' => 'required|integer',
-            'sequence' => 'required|integer',
-            'description' => 'required|string',
+            "school_year_id" => "required|integer",
+            "sequence" => "required|integer",
+            "description" => "required|string",
         ]);
 
-        $internshipRule = InternshipRule::create($data);
+        if (auth()->check()) {
+            auth()->user()->id;
+            $internshipRule = InternshipRule::create($data);
+    
+            return response()->json(["message" => "Internship rule created successfully", "data" => $internshipRule]);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"]);
+        }
 
-        return response()->json(['message' => 'Internship rule created successfully', 'data' => $internshipRule]);
     }
 
     public function show($id)
@@ -31,29 +37,36 @@ class InternshipRuleController extends Controller
         $internshipRule = InternshipRule::find($id);
 
         if (!$internshipRule) {
-            return response()->json(['message' => 'Internship rule not found'], 404);
+            return response()->json(["message" => "Internship rule not found"], 404);
         }
 
-        return response()->json(['message' => 'Success', 'data' => $internshipRule]);
+        return response()->json(["message" => "Success", "data" => $internshipRule]);
     }
 
     public function update(Request $request, $id)
     {
         $data = $request->validate([
-            'school_year_id' => 'integer',
-            'sequence' => 'integer',
-            'description' => 'string',
+            "school_year_id" => "integer",
+            "sequence" => "integer",
+            "description" => "string",
         ]);
+        
 
         $internshipRule = InternshipRule::find($id);
 
         if (!$internshipRule) {
-            return response()->json(['message' => 'Internship rule not found'], 404);
+            return response()->json(["message" => "Internship rule not found"], 404);
         }
 
-        $internshipRule->update($data);
-
-        return response()->json(['message' => 'Internship rule updated successfully', 'data' => $internshipRule]);
+        if (auth()->check()) {
+            auth()->user()->id;
+            $internshipRule->update($data);
+    
+            return response()->json(["message" => "Internship rule updated successfully", "data" => $internshipRule]);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"]);
+        }
+        
     }
 
     public function destroy($id)
@@ -61,11 +74,17 @@ class InternshipRuleController extends Controller
         $internshipRule = InternshipRule::find($id);
 
         if (!$internshipRule) {
-            return response()->json(['message' => 'Internship rule not found'], 404);
+            return response()->json(["message" => "Internship rule not found"], 404);
         }
 
-        $internshipRule->delete();
+        if (auth()->check()) {
+            auth()->user()->id;
+            $internshipRule->delete();
+    
+            return response()->json(["message" => "Internship rule deleted successfully"]);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"]);
+        }
 
-        return response()->json(['message' => 'Internship rule deleted successfully']);
     }
 }

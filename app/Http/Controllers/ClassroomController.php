@@ -15,7 +15,7 @@ class ClassroomController extends Controller
      */
     public function index()
     {
-        $classrooms = Classroom::with('schoolYear')->latest()->get();
+        $classrooms = Classroom::with("schoolYear")->latest()->get();
 
         if ($classrooms->isEmpty()) {
             return response()->json([
@@ -41,10 +41,10 @@ class ClassroomController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make(request()->all(), [
-            'name' => 'required',
-            'vocational_program' => 'required',
-            'vocational_competency' => 'required',
-            'school_year_id' => 'required',
+            "name" => "required",
+            "vocational_program" => "required",
+            "vocational_competency" => "required",
+            "school_year_id" => "required",
         ]);
 
         if ($validator->fails()) {
@@ -55,21 +55,21 @@ class ClassroomController extends Controller
             auth()->user()->id;
 
             $classrooms = Classroom::create([
-                'name' => $request->name,
-                'vocational_program' => $request->vocational_program,
-                'vocational_competency' => $request->vocational_competency,
-                'school_year_id' => $request->school_year_id,
+                "name" => $request->name,
+                "vocational_program" => $request->vocational_program,
+                "vocational_competency" => $request->vocational_competency,
+                "school_year_id" => $request->school_year_id,
             ]);
 
             return response()->json([
                 "error" => false,
-                "message" => 'Success',
+                "message" => "Classroom created successfully",
                 "data" => $classrooms
             ]);
         } else {
             return response()->json([
                 "error" => true,
-                "message" => 'User not authenticated.'
+                "message" => "User not authenticated."
             ]);
         }
     }
@@ -82,7 +82,13 @@ class ClassroomController extends Controller
      */
     public function show($id)
     {
-        //
+        $classrooms = Classroom::find($id);
+
+        if (!$classrooms) {
+            return response()->json(["error" => true, "message" => "Classroom not found"], 404);
+        }
+
+        return response()->json(["error" => false, "message" => "success", "data" => $classrooms]);
     }
 
     /**
@@ -95,10 +101,10 @@ class ClassroomController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make(request()->all(), [
-            'name' => 'required',
-            'vocational_program' => 'required',
-            'vocational_competency' => 'required',
-            'school_year_id' => 'required',
+            "name" => "required",
+            "vocational_program" => "required",
+            "vocational_competency" => "required",
+            "school_year_id" => "required",
         ]);
 
         if ($validator->fails()) {
@@ -108,28 +114,28 @@ class ClassroomController extends Controller
         $classrooms = Classroom::find($id);
 
         if (!$classrooms) {
-            return response()->json(['message' => 'Classroom not found'], 404);
+            return response()->json(["error" => true, "message" => "Classroom not found"], 404);
         }
 
         if (auth()->check()) {
             auth()->user()->id;
 
             $classrooms->update([
-                'name' => $request->name,
-                'vocational_program' => $request->vocational_program,
-                'vocational_competency' => $request->vocational_competency,
-                'school_year_id' => $request->school_year_id,
+                "name" => $request->name,
+                "vocational_program" => $request->vocational_program,
+                "vocational_competency" => $request->vocational_competency,
+                "school_year_id" => $request->school_year_id,
             ]);
 
             return response()->json([
                 "error" => false,
-                "message" => 'Success',
+                "message" => "Student updated successfully",
                 "data" => $classrooms
             ]);
         } else {
             return response()->json([
                 "error" => true,
-                "message" => 'User not authenticated.'
+                "message" => "User not authenticated."
             ]);
         }
     }
@@ -145,7 +151,7 @@ class ClassroomController extends Controller
         $classrooms = Classroom::find($id);
 
         if (!$classrooms) {
-            return response()->json(['message' => 'Classroom not found'], 404);
+            return response()->json(["error" => true, "message" => "Classroom not found"], 404);
         }
 
         if (auth()->check()) {
@@ -155,8 +161,7 @@ class ClassroomController extends Controller
 
             return response()->json([
                 "error" => false,
-                "message" => 'Success',
-                "data" => $classrooms
+                "message" => "Classroom deleted successfully"
             ]);
         } else {
             return response()->json([

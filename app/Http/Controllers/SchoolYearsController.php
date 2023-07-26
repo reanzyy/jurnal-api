@@ -15,7 +15,7 @@ class SchoolYearsController extends Controller
      */
     public function index()
     {
-        $school_years = SchoolYear::latest()->get();
+        $school_years = SchoolYear::all();
 
         if ($school_years->isEmpty()) {
             return response()->json([
@@ -41,8 +41,8 @@ class SchoolYearsController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make(request()->all(), [
-            'name' => 'required',
-            'headmaster_name' => 'required',
+            "name" => "required",
+            "headmaster_name" => "required",
         ]);
 
         if ($validator->fails()) {
@@ -53,19 +53,19 @@ class SchoolYearsController extends Controller
             auth()->user()->id;
 
             $school_years = SchoolYear::create([
-                'name' => $request->name,
-                'headmaster_name' => $request->headmaster_name,
+                "name" => $request->name,
+                "headmaster_name" => $request->headmaster_name,
             ]);
 
             return response()->json([
                 "error" => false,
-                "message" => 'Success',
+                "message" => "School year created successfully",
                 "data" => $school_years
             ]);
         } else {
             return response()->json([
                 "error" => true,
-                "message" => 'User not authenticated.'
+                "message" => "User not authenticated."
             ]);
         }
     }
@@ -78,7 +78,13 @@ class SchoolYearsController extends Controller
      */
     public function show($id)
     {
-        //
+        $school_years = SchoolYear::find($id);
+
+        if (!$school_years) {
+            return response()->json(["error" => true, "message" => "School year not found"], 404);
+        }
+
+        return response()->json(["error" => false, "message" => "success", "data" => $school_years]);
     }
 
     /**
@@ -91,8 +97,8 @@ class SchoolYearsController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make(request()->all(), [
-            'name' => 'required',
-            'headmaster_name' => 'required',
+            "name" => "required",
+            "headmaster_name" => "required",
         ]);
 
         if ($validator->fails()) {
@@ -102,26 +108,26 @@ class SchoolYearsController extends Controller
         $school_years = SchoolYear::find($id);
 
         if (!$school_years) {
-            return response()->json(['message' => 'Classroom not found'], 404);
+            return response()->json(["error" => true, "message" => "School year not found"], 404);
         }
 
         if (auth()->check()) {
             auth()->user()->id;
 
             $school_years->update([
-                'name' => $request->name,
-                'headmaster_name' => $request->headmaster_name,
+                "name" => $request->name,
+                "headmaster_name" => $request->headmaster_name,
             ]);
 
             return response()->json([
                 "error" => false,
-                "message" => 'Success',
+                "message" => "School year updated successfully",
                 "data" => $school_years
             ]);
         } else {
             return response()->json([
                 "error" => true,
-                "message" => 'User not authenticated.'
+                "message" => "User not authenticated."
             ]);
         }
     }
@@ -137,7 +143,7 @@ class SchoolYearsController extends Controller
         $school_years = SchoolYear::find($id);
 
         if (!$school_years) {
-            return response()->json(['message' => 'Classroom not found'], 404);
+            return response()->json(["error" => true, "message" => "School year not found"], 404);
         }
 
         if (auth()->check()) {
@@ -147,8 +153,7 @@ class SchoolYearsController extends Controller
 
             return response()->json([
                 "error" => false,
-                "message" => 'Success',
-                "data" => $school_years
+                "message" => "School year deleted successfully"
             ]);
         } else {
             return response()->json([
