@@ -15,7 +15,7 @@ class StudentDraftController extends Controller
      */
     public function index()
     {
-        $student_drafts = StudentDraft::all();
+        $student_drafts = StudentDraft::latest()->get();
 
         if ($student_drafts->isEmpty()) {
             return response()->json([
@@ -41,8 +41,8 @@ class StudentDraftController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make(request()->all(), [
-            "student_id" => "required",
-            "description" => "required",
+            "student_id" => 'required',
+            "description" => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -53,19 +53,19 @@ class StudentDraftController extends Controller
             auth()->user()->id;
 
             $student_drafts = StudentDraft::create([
-                "student_id" => "required",
-                "description" => "required",
+                "student_id" => 'required',
+                "description" => 'required',
             ]);
 
             return response()->json([
                 "error" => false,
-                "message" => "Student created succesfully",
+                "message" => 'Success',
                 "data" => $student_drafts
             ]);
         } else {
             return response()->json([
                 "error" => true,
-                "message" => "User not authenticated."
+                "message" => 'User not authenticated.'
             ]);
         }
     }
@@ -78,13 +78,17 @@ class StudentDraftController extends Controller
      */
     public function show($id)
     {
-        $student_drafts = StudentDraft::find($id);
+        $student_draft = StudentDraft::find($id);
 
-        if (!$student_drafts) {
-            return response()->json(["error" => true, "message" => "Student not found"], 404);
+        if (!$student_draft) {
+            return response()->json(['message' => 'Student Draft not found'], 404);
         }
 
-        return response()->json(["error" => false, "message" => "success", "data" => $student_drafts]);
+        return response()->json([
+            "error" => false,
+            "message" => 'Success',
+            'data' => $student_draft
+        ]);
     }
 
     /**
@@ -97,8 +101,8 @@ class StudentDraftController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make(request()->all(), [
-            "student_id" => "required",
-            "description" => "required",
+            "student_id" => 'required',
+            "description" => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -108,26 +112,26 @@ class StudentDraftController extends Controller
         $student_drafts = StudentDraft::find($id);
 
         if (!$student_drafts) {
-            return response()->json(["message" => "Student not found"], 404);
+            return response()->json(['message' => 'Classroom not found'], 404);
         }
 
         if (auth()->check()) {
             auth()->user()->id;
 
             $student_drafts->update([
-                "name" => $request->name,
-                "headmaster_name" => $request->headmaster_name,
+                'name' => $request->name,
+                'headmaster_name' => $request->headmaster_name,
             ]);
 
             return response()->json([
                 "error" => false,
-                "message" => "Student updated succesfully",
+                "message" => 'Success',
                 "data" => $student_drafts
             ]);
         } else {
             return response()->json([
                 "error" => true,
-                "message" => "User not authenticated."
+                "message" => 'User not authenticated.'
             ]);
         }
     }
@@ -143,7 +147,7 @@ class StudentDraftController extends Controller
         $student_drafts = StudentDraft::find($id);
 
         if (!$student_drafts) {
-            return response()->json(["error" => true, "message" => "Student not found"], 404);
+            return response()->json(['message' => 'Classroom not found'], 404);
         }
 
         if (auth()->check()) {
@@ -153,7 +157,8 @@ class StudentDraftController extends Controller
 
             return response()->json([
                 "error" => false,
-                "message" => "Student deleted succesfully",
+                "message" => 'Success',
+                "data" => $student_drafts
             ]);
         } else {
             return response()->json([
