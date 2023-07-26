@@ -43,11 +43,13 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
-
 });
 
 Route::apiResource('students', StudentController::class);
-
+Route::apiResource('school-years', SchoolYearsController::class);
+Route::apiResource('classrooms', ClassroomController::class);
+Route::apiResource('schools', SchoolController::class);
+Route::apiResource('student-drafts', StudentDraftController::class);
 Route::apiResource('companies', CompanyController::class);
 // Route::get('/companies', [CompanyController::class, 'index']);
 // Route::post('/companies', [CompanyController::class, 'store']);
