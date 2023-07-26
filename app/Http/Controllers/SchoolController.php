@@ -41,8 +41,8 @@ class SchoolController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make(request()->all(), [
-            "name" => "required",
-            "npsn" => "required",
+            'name' => 'required',
+            'npsn' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -53,19 +53,19 @@ class SchoolController extends Controller
             auth()->user()->id;
 
             $schools = School::create([
-                "name" => $request->name,
-                "npsn" => $request->npsn,
+                'name' => $request->name,
+                'npsn' => $request->npsn,
             ]);
 
             return response()->json([
                 "error" => false,
-                "message" => "School created successfully",
+                "message" => 'Success',
                 "data" => $schools
             ]);
         } else {
             return response()->json([
                 "error" => true,
-                "message" => "User not authenticated."
+                "message" => 'User not authenticated.'
             ]);
         }
     }
@@ -81,10 +81,14 @@ class SchoolController extends Controller
         $school = School::find($id);
 
         if (!$school) {
-            return response()->json(["error" => true, "message" => "Student not found"], 404);
+            return response()->json(['message' => 'School not found'], 404);
         }
 
-        return response()->json(["error" => false, "message" => "success", "data" => $school]);
+        return response()->json([
+            "error" => false,
+            "message" => 'Success',
+            'data' => $school
+        ]);
     }
 
     /**
@@ -97,8 +101,8 @@ class SchoolController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make(request()->all(), [
-            "name" => "required",
-            "npsn" => "required",
+            'name' => 'required',
+            'npsn' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -108,26 +112,26 @@ class SchoolController extends Controller
         $schools = School::find($id);
 
         if (!$schools) {
-            return response()->json(["error" => true, "message" => "School not found"], 404);
+            return response()->json(['message' => 'School not found'], 404);
         }
 
         if (auth()->check()) {
             auth()->user()->id;
 
             $schools->update([
-                "name" => $request->name,
-                "npsn" => $request->npsn,
+                'name' => $request->name,
+                'npsn' => $request->npsn,
             ]);
 
             return response()->json([
                 "error" => false,
-                "message" => "School updated successfully",
+                "message" => 'Success',
                 "data" => $schools
             ]);
         } else {
             return response()->json([
                 "error" => true,
-                "message" => "User not authenticated."
+                "message" => 'User not authenticated.'
             ]);
         }
     }
@@ -143,7 +147,7 @@ class SchoolController extends Controller
         $school = School::find($id);
 
         if (!$school) {
-            return response()->json(["error" => true, "message" => "School not found"], 404);
+            return response()->json(['message' => 'School not found'], 404);
         }
 
         if (auth()->check()) {
@@ -153,7 +157,7 @@ class SchoolController extends Controller
 
             return response()->json([
                 "error" => false,
-                "message" => "School deleted successfully",
+                "message" => 'Success',
                 "data" => $school
             ]);
         } else {
