@@ -19,6 +19,7 @@ use App\Http\Controllers\InternshipSuggestionController;
 use App\Http\Controllers\InternshipCompanyEmployeeController;
 use App\Http\Controllers\InternshipCompanyJobTitleController;
 use App\Http\Controllers\InternshipCompanyRuleController;
+use App\Http\Controllers\SchoolAdvisorController;
 use App\Models\School;
 use App\Models\SchoolAdvisor;
 

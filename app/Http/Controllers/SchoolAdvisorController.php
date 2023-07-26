@@ -21,7 +21,7 @@ class SchoolAdvisorController extends Controller
             'phone' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'gender' => 'required|in:male,female',
-            'is_active' => 'required|boolean',
+            'is_active' => 'boolean',
             'user_id' => 'integer|exists:users,id',
             'password_hint' => 'nullable|string|max:255',
         ]);
@@ -50,7 +50,7 @@ class SchoolAdvisorController extends Controller
             'phone' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'gender' => 'required|in:male,female',
-            'is_active' => 'required|boolean',
+            'is_active' => 'boolean',
             'user_id' => 'integer|exists:users,id',
             'password_hint' => 'nullable|string|max:255',
         ]);

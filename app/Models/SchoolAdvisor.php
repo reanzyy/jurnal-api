@@ -13,7 +13,6 @@ class SchoolAdvisor extends Model
         'phone',
         'address',
         'gender',
-        'is_active',
         'user_id',
         'password_hint',
     ];
