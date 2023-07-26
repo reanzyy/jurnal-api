@@ -16,13 +16,9 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'company_id' => 'required|integer|exists:companies,id',
-            'identity' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
-            'gender' => 'required|in:male,female',
-            'user_id' => 'integer|exists:users,id',
-            'password_hint' => 'nullable|string|max:255',
+            'address' => 'required|string|max:255',
+            'director' => 'required|string|max:255'
         ]);
 
         $company = Company::create($data);
@@ -44,13 +40,9 @@ class CompanyController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->validate([
-            'company_id' => 'integer|exists:companies,id',
-            'identity' => 'string|max:255',
-            'name' => 'string|max:255',
-            'phone' => 'string|max:255',
-            'gender' => 'in:male,female',
-            'user_id' => 'integer|exists:users,id',
-            'password_hint' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'director' => 'required|string|max:255'
         ]);
 
         $company = Company::find($id);
