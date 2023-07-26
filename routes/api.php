@@ -1,20 +1,23 @@
 <?php
 
-use App\Http\Controllers\InternshipController;
-use App\Http\Controllers\CompanyAdvisorController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\InternshipRuleController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\StudentController;
-use App\Models\InternshipCompanyJobTitle;
-use App\Models\InternshipCompanyEmployee;
-use App\Models\InternshipCompetency;
-use App\Models\InternshipEquipment;
-use App\Models\InternshipJournal;
-use App\Models\InternshipSuggestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\InternshipController;
+use App\Http\Controllers\SchoolYearsController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\StudentDraftController;
+use App\Http\Controllers\CompanyAdvisorController;
+use App\Http\Controllers\InternshipRuleController;
+use App\Http\Controllers\InternshipJournalController;
+use App\Http\Controllers\InternshipEquipmentController;
+use App\Http\Controllers\InternshipSuggestionController;
+use App\Http\Controllers\InternshipCompanyEmployeeController;
+use App\Http\Controllers\InternshipCompanyJobTitleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,7 +54,6 @@ Route::apiResource('classrooms', ClassroomController::class);
 Route::apiResource('schools', SchoolController::class);
 Route::apiResource('student-drafts', StudentDraftController::class);
 Route::apiResource('companies', CompanyController::class);
-Route::get('/internship-rules', [InternshipRuleController::class, 'index']);
 Route::apiResource('notifications', NotificationController::class);
 Route::apiResource('company_advisors', CompanyAdvisorController::class);
 Route::apiResource('internships', InternshipController::class);
