@@ -22,9 +22,9 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make(request()->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
+            'username' => 'required',
             'password' => 'required'
+            // 'email' => 'required|email|unique:users',
         ]);
 
 
@@ -33,8 +33,8 @@ class AuthController extends Controller
         }
 
         $user = new User;
-        $user->name = $request->name;
-        $user->email = $request->email;
+        $user->username = $request->username;
+        // $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->save();
 
@@ -53,7 +53,7 @@ class AuthController extends Controller
      */
     public function login()
     {
-        $credentials = request(['email', 'password']);
+        $credentials = request(['username', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
