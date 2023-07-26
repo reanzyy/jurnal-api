@@ -69,4 +69,3 @@ class CompanyController extends Controller
         return response()->json(['error' => false, 'message' => 'Company deleted successfully']);
     }
 }
-

@@ -10,23 +10,28 @@ class InternshipSuggestionController extends Controller
     public function index()
     {
         $suggestions = InternshipSuggestion::all();
-        return response()->json(['error' => false, 'message' => 'success', 'data' => $suggestions]);
+        return response()->json(["error" => false, "message" => "success", "data" => $suggestions]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'internship_id' => 'required|integer|exists:internships,id',
-            'company_employee_id' => 'required|integer|exists:internship_company_employees,id',
-            'suggest' => 'required|string',
-            'approval_user_id' => 'nullable|integer|exists:users,id',
-            'approval_by' => 'required|string',
-            'approval_at' => 'nullable|timestamp',
+            "internship_id" => "required|integer|exists:internships,id",
+            "company_employee_id" => "required|integer|exists:internship_company_employees,id",
+            "suggest" => "required|string",
+            "approval_user_id" => "nullable|integer|exists:users,id",
+            "approval_by" => "required|string",
+            "approval_at" => "nullable|timestamp",
         ]);
 
-        $suggestion = InternshipSuggestion::create($data);
+        if (auth()->check()) {
+            auth()->user()->id;
+            $suggestion = InternshipSuggestion::create($data);
 
-        return response()->json(['error' => false, 'message' => 'Suggestion created successfully', 'data' => $suggestion]);
+            return response()->json(["error" => false, "message" => "Suggestion created successfully", "data" => $suggestion]);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"]);
+        }
     }
 
     public function show($id)
@@ -34,32 +39,37 @@ class InternshipSuggestionController extends Controller
         $suggestion = InternshipSuggestion::find($id);
 
         if (!$suggestion) {
-            return response()->json(['error' => true, 'message' => 'Suggestion not found'], 404);
+            return response()->json(["error" => true, "message" => "Suggestion not found"], 404);
         }
 
-        return response()->json(['error' => false, 'message' => 'success', 'data' => $suggestion]);
+        return response()->json(["error" => false, "message" => "success", "data" => $suggestion]);
     }
 
     public function update(Request $request, $id)
     {
         $data = $request->validate([
-            'internship_id' => 'integer|exists:internships,id',
-            'company_employee_id' => 'integer|exists:internship_company_employees,id',
-            'suggest' => 'string',
-            'approval_user_id' => 'nullable|integer|exists:users,id',
-            'approval_by' => 'string',
-            'approval_at' => 'nullable|timestamp',
+            "internship_id" => "integer|exists:internships,id",
+            "company_employee_id" => "integer|exists:internship_company_employees,id",
+            "suggest" => "string",
+            "approval_user_id" => "nullable|integer|exists:users,id",
+            "approval_by" => "string",
+            "approval_at" => "nullable|timestamp",
         ]);
 
         $suggestion = InternshipSuggestion::find($id);
 
         if (!$suggestion) {
-            return response()->json(['error' => true, 'message' => 'Suggestion not found'], 404);
+            return response()->json(["error" => true, "message" => "Suggestion not found"], 404);
         }
 
-        $suggestion->update($data);
+        if (auth()->check()) {
+            auth()->user()->id;
+            $suggestion->update($data);
 
-        return response()->json(['error' => false, 'message' => 'Suggestion updated successfully', 'data' => $suggestion]);
+            return response()->json(["error" => false, "message" => "Suggestion updated successfully", "data" => $suggestion]);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"]);
+        }
     }
 
     public function destroy($id)
@@ -67,12 +77,16 @@ class InternshipSuggestionController extends Controller
         $suggestion = InternshipSuggestion::find($id);
 
         if (!$suggestion) {
-            return response()->json(['error' => true, 'message' => 'Suggestion not found'], 404);
+            return response()->json(["error" => true, "message" => "Suggestion not found"], 404);
         }
 
-        $suggestion->delete();
+        if (auth()->check()) {
+            auth()->user()->id;
+            $suggestion->delete();
 
-        return response()->json(['error' => false, 'message' => 'Suggestion deleted successfully']);
+            return response()->json(["error" => false, "message" => "Suggestion deleted successfully"]);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"]);
+        }
     }
 }
-
