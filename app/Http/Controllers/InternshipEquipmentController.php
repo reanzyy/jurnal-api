@@ -17,7 +17,7 @@ class InternshipEquipmentController extends Controller
     {
         $data = $request->validate([
             "internship_id" => "required|integer|exists:internships,id",
-            "tool" => "required|string|mas:255",
+            "tool" => "required|string|max:255",
             "specification" => "required|string|max:255",
             "utility" => "required|string",
         ]);
@@ -47,7 +47,7 @@ class InternshipEquipmentController extends Controller
     {
         $data = $request->validate([
             "internship_id" => "required|integer|exists:internships,id",
-            "tool" => "required|string|mas:255",
+            "tool" => "required|string|max:255",
             "specification" => "required|string|max:255",
             "utility" => "required|string",
         ]);
@@ -75,11 +75,11 @@ class InternshipEquipmentController extends Controller
         if (!$equipment) {
             return response()->json(["error" => true, "message" => "Equipment not found"], 404);
         }
-        
+
         if (auth()->check()) {
             auth()->user()->id;
             $equipment->delete();
-    
+
             return response()->json(["error" => false, "message" => "Equipment deleted successfully"]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);
