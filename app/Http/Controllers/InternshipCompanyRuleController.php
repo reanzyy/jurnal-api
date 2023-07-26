@@ -21,9 +21,14 @@ class InternshipCompanyRuleController extends Controller
             'description' => 'required|string',
         ]);
 
-        $companyRule = InternshipCompanyRule::create($data);
+        if (auth()->check()) {
+            auth()->user()->id;
+            $companyRule = InternshipCompanyRule::create($data);
 
-        return response()->json(['message' => 'Internship Company Rules created successfully', 'data' => $companyRule]);
+            return response()->json(['message' => 'Internship Company Rules created successfully', 'data' => $companyRule]);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"]);
+        }
     }
 
     public function show($id)
@@ -51,9 +56,14 @@ class InternshipCompanyRuleController extends Controller
             return response()->json(['message' => 'Internship Company Rules not found'], 404);
         }
 
-        $companyRule->update($data);
+        if (auth()->check()) {
+            auth()->user()->id;
+            $companyRule->update($data);
 
-        return response()->json(['message' => 'Internship Company Rules updated successfully', 'data' => $companyRule]);
+            return response()->json(['message' => 'Internship Company Rules updated successfully', 'data' => $companyRule]);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"]);
+        }
     }
 
     public function destroy($id)
@@ -64,8 +74,13 @@ class InternshipCompanyRuleController extends Controller
             return response()->json(['message' => 'Internship Company Rules not found'], 404);
         }
 
-        $companyRule->delete();
+        if (auth()->check()) {
+            auth()->user()->id;
+            $companyRule->delete();
 
-        return response()->json(['message' => 'Internship Company Rules deleted successfully']);
+            return response()->json(['message' => 'Internship Company Rules deleted successfully']);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"]);
+        }
     }
 }

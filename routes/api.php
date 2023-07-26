@@ -19,6 +19,7 @@ use App\Http\Controllers\InternshipSuggestionController;
 use App\Http\Controllers\InternshipCompanyEmployeeController;
 use App\Http\Controllers\InternshipCompanyJobTitleController;
 use App\Http\Controllers\InternshipCompanyRuleController;
+use App\Http\Controllers\InternshipCompetencyController;
 use App\Http\Controllers\SchoolAdvisorController;
 use App\Models\School;
 use App\Models\SchoolAdvisor;
@@ -69,3 +70,4 @@ Route::apiResource('internship_suggestion', InternshipSuggestionController::clas
 Route::apiResource('internship_equipment', InternshipEquipmentController::class);
 Route::apiResource('internship_rules', InternshipRuleController::class);
 Route::apiResource('internship_company_rules', InternshipCompanyRuleController::class);
+Route::apiResource('internship_competencies', InternshipCompetencyController::class);

@@ -26,9 +26,14 @@ class SchoolAdvisorController extends Controller
             'password_hint' => 'nullable|string|max:255',
         ]);
 
-        $schoolAdvisor = SchoolAdvisor::create($data);
+        if (auth()->check()) {
+            auth()->user()->id;
+            $schoolAdvisor = SchoolAdvisor::create($data);
 
-        return response()->json(['message' => 'School Advisor created successfully', 'data' => $schoolAdvisor]);
+            return response()->json(['message' => 'School Advisor created successfully', 'data' => $schoolAdvisor]);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"]);
+        }
     }
 
     public function show($id)
@@ -61,9 +66,14 @@ class SchoolAdvisorController extends Controller
             return response()->json(['message' => 'School Advisor not found'], 404);
         }
 
-        $schoolAdvisor->update($data);
+        if (auth()->check()) {
+            auth()->user()->id;
+            $schoolAdvisor->update($data);
 
-        return response()->json(['message' => 'School Advisor updated successfully', 'data' => $schoolAdvisor]);
+            return response()->json(['message' => 'School Advisor updated successfully', 'data' => $schoolAdvisor]);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"]);
+        }
     }
 
     public function destroy($id)
@@ -74,8 +84,14 @@ class SchoolAdvisorController extends Controller
             return response()->json(['message' => 'School Advisor not found'], 404);
         }
 
-        $schoolAdvisor->delete();
+        if (auth()->check()) {
+            auth()->user()->id;
 
-        return response()->json(['message' => 'School Advisor deleted successfully']);
+            $schoolAdvisor->delete();
+
+            return response()->json(['message' => 'School Advisor deleted successfully']);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"]);
+        }
     }
 }
