@@ -9,7 +9,7 @@ class InternshipController extends Controller
 {
     public function index()
     {
-        $internships = Internship::all();
+        $internships = Internship::with('schoolYear', 'student', 'company', "companyAdvisor", "schoolAdvisor")->get();
         return response()->json(["error" => false, "message" => "success", "data" => $internships]);
     }
 
@@ -79,11 +79,11 @@ class InternshipController extends Controller
         if (!$internship) {
             return response()->json(["error" => true, "message" => "Internship not found"], 404);
         }
-        
+
         if (auth()->check()) {
             auth()->user()->id;
             $internship->delete();
-    
+
             return response()->json(["error" => false, "message" => "Internship deleted successfully"]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);

@@ -9,7 +9,7 @@ class InternshipCompetencyController extends Controller
 {
     public function index()
     {
-        $competencies = InternshipCompetency::all();
+        $competencies = InternshipCompetency::with('internship')->get();
         return response()->json(["error" => false, "message" => "success", "data" => $competencies]);
     }
 
@@ -59,7 +59,7 @@ class InternshipCompetencyController extends Controller
         if (auth()->check()) {
             auth()->user()->id;
             $competency->update($data);
-    
+
             return response()->json(["error" => false, "message" => "Competency updated successfully", "data" => $competency]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);
@@ -78,7 +78,7 @@ class InternshipCompetencyController extends Controller
         if (auth()->check()) {
             auth()->user()->id;
             $competency->delete();
-    
+
             return response()->json(["error" => false, "message" => "Competency deleted successfully"]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);

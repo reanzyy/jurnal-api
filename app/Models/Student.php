@@ -32,4 +32,9 @@ class Student extends Model
     {
         return $this->belongsTo(Classroom::class, 'classroom_id', 'id');
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(Student::class, 'user_id', 'id');
+    }
 }

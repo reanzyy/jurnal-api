@@ -9,7 +9,7 @@ class InternshipCompanyController extends Controller
 {
     public function index()
     {
-        $internship_company = InternshipCompany::all();
+        $internship_company = InternshipCompany::with('internship')->get();
         return response()->json(["message" => "Success", "data" => $internship_company]);
     }
 
@@ -17,7 +17,7 @@ class InternshipCompanyController extends Controller
     {
         $data = $request->validate([
             "internship_id" => "required|integer",
-            "since" => "required|string",
+            "since" => "required|integer",
             "sectors" => "array",
             "services" => "array",
             "address" => "nullable|string",
@@ -33,7 +33,7 @@ class InternshipCompanyController extends Controller
         if (auth()->check()) {
             auth()->user()->id;
             $internship_company = InternshipCompany::create($data);
-    
+
             return response()->json(["message" => "Company created successfully", "data" => $internship_company]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);
@@ -55,7 +55,7 @@ class InternshipCompanyController extends Controller
     {
         $data = $request->validate([
             "internship_id" => "integer",
-            "since" => "string",
+            "since" => "integer",
             "sectors" => "array",
             "services" => "array",
             "address" => "nullable|string",
@@ -69,7 +69,7 @@ class InternshipCompanyController extends Controller
         ]);
 
         $internship_company = InternshipCompany::find($id);
-        
+
         if (!$internship_company) {
             return response()->json(["message" => "Internship Company not found"], 404);
         }
@@ -94,7 +94,7 @@ class InternshipCompanyController extends Controller
         if (auth()->check()) {
             auth()->user()->id;
             $internship_company->delete();
-    
+
             return response()->json(["message" => "Internship Company deleted successfully"]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);

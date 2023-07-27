@@ -9,7 +9,7 @@ class InternshipEquipmentController extends Controller
 {
     public function index()
     {
-        $equipments = InternshipEquipment::all();
+        $equipments = InternshipEquipment::with('internship')->get();
         return response()->json(["error" => false, "message" => "success", "data" => $equipments]);
     }
 
@@ -75,11 +75,11 @@ class InternshipEquipmentController extends Controller
         if (!$equipment) {
             return response()->json(["error" => true, "message" => "Equipment not found"], 404);
         }
-        
+
         if (auth()->check()) {
             auth()->user()->id;
             $equipment->delete();
-    
+
             return response()->json(["error" => false, "message" => "Equipment deleted successfully"]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);

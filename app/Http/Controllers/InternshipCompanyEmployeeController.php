@@ -9,7 +9,7 @@ class InternshipCompanyEmployeeController extends Controller
 {
     public function index()
     {
-        $employees = InternshipCompanyEmployee::all();
+        $employees = InternshipCompanyEmployee::with('internship', 'jobTitle')->get();
         return response()->json(["error" => false, "message" => "success", "data" => $employees]);
     }
 

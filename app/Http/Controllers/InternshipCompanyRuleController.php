@@ -9,7 +9,7 @@ class InternshipCompanyRuleController extends Controller
 {
     public function index()
     {
-        $companyRules = InternshipCompanyRule::all();
+        $companyRules = InternshipCompanyRule::with('internship')->get();
         return response()->json(['message' => 'Success', 'data' => $companyRules]);
     }
 

@@ -9,7 +9,7 @@ class InternshipJournalController extends Controller
 {
     public function index()
     {
-        $journals = InternshipJournal::all();
+        $journals = InternshipJournal::with('internship', 'competency', 'approvalUser')->get();
         return response()->json(["error" => false, "message" => "success", "data" => $journals]);
     }
 
@@ -28,7 +28,7 @@ class InternshipJournalController extends Controller
         if (auth()->check()) {
             auth()->user()->id;
             $journal = InternshipJournal::create($data);
-    
+
             return response()->json(["error" => false, "message" => "Journal created successfully", "data" => $journal]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);
@@ -68,7 +68,7 @@ class InternshipJournalController extends Controller
         if (auth()->check()) {
             auth()->user()->id;
             $journal->update($data);
-    
+
             return response()->json(["error" => false, "message" => "Journal updated successfully", "data" => $journal]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);
@@ -87,7 +87,7 @@ class InternshipJournalController extends Controller
         if (auth()->check()) {
             auth()->user()->id;
             $journal->delete();
-            
+
             return response()->json(["error" => false, "message" => "Journal deleted successfully"]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);

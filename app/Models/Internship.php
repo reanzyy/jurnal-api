@@ -17,7 +17,7 @@ class Internship extends Model
 
     public function schoolYear()
     {
-        return $this->belongsTo(SchoolYear::class);
+        return $this->hasMany(schoolYear::class, 'id', 'school_year_id');
     }
 
     public function student()
@@ -32,7 +32,7 @@ class Internship extends Model
 
     public function schoolAdvisor()
     {
-        return $this->belongsTo(SchoolAdvisor::class);
+        return $this->hasMany(SchoolAdvisor::class, 'id', 'school_advisor_id');
     }
 
     public function companyAdvisor()

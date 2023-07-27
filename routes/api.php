@@ -12,6 +12,7 @@ use App\Http\Controllers\SchoolYearsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\StudentDraftController;
 use App\Http\Controllers\CompanyAdvisorController;
+use App\Http\Controllers\InternshipCompanyController;
 use App\Http\Controllers\InternshipRuleController;
 use App\Http\Controllers\InternshipJournalController;
 use App\Http\Controllers\InternshipEquipmentController;
@@ -50,7 +51,7 @@ Route::group([
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
-    Route::post('me', [AuthController::class, 'me']);
+    Route::get('me', [AuthController::class, 'me']);
 });
 
 Route::apiResource('students', StudentController::class);
@@ -71,3 +72,4 @@ Route::apiResource('internship_equipment', InternshipEquipmentController::class)
 Route::apiResource('internship_rules', InternshipRuleController::class);
 Route::apiResource('internship_company_rules', InternshipCompanyRuleController::class);
 Route::apiResource('internship_competencies', InternshipCompetencyController::class);
+Route::apiResource('internship_company', InternshipCompanyController::class);

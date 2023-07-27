@@ -46,11 +46,14 @@ class AuthController extends Controller
         $credentials = request(['username', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'NIS atau Password Anda salah'], 401);
         }
 
-        return $this->respondWithToken($token);
+        return response()->json([
+            "token" => $token,
+        ]);
     }
+
 
     /**
      * Get the authenticated User.
