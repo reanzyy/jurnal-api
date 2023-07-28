@@ -9,7 +9,7 @@ class InternshipRuleController extends Controller
 {
     public function index()
     {
-        $Rules = InternshipRule::all();
+        $Rules = InternshipRule::with('schoolYear')->get();
         return response()->json(['error' => false, 'message' => 'success', 'data' => $Rules]);
     }
 

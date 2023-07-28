@@ -23,7 +23,7 @@ class InternshipJournal extends Model
 
     public function competency()
     {
-        return $this->belongsTo(InternshipCompetency::class, 'competency_id');
+        return $this->hasMany(InternshipCompetency::class, 'id', 'competency_id');
     }
 
     public function approvalUser()

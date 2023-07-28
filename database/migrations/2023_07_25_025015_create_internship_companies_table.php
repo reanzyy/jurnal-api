@@ -16,7 +16,7 @@ class CreateInternshipCompaniesTable extends Migration
         Schema::create('internship_companies', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('internship_id');
-            $table->string('since', 255);
+            $table->integer('since', 255);
             $table->json('sectors');
             $table->json('services');
             $table->text('address');

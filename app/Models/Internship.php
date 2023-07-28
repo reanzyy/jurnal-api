@@ -32,11 +32,16 @@ class Internship extends Model
 
     public function schoolAdvisor()
     {
-        return $this->belongsTo(SchoolAdvisor::class);
+        return $this->hasMany(SchoolAdvisor::class, 'id', 'school_advisor_id');
     }
 
     public function companyAdvisor()
     {
         return $this->belongsTo(CompanyAdvisor::class);
+    }
+
+    public function journals()
+    {
+        return $this->hasMany(InternshipJournal::class);
     }
 }

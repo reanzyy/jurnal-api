@@ -9,7 +9,7 @@ class InternshipEquipmentController extends Controller
 {
     public function index()
     {
-        $equipments = InternshipEquipment::all();
+        $equipments = InternshipEquipment::with('internship')->get();
         return response()->json(["error" => false, "message" => "success", "data" => $equipments]);
     }
 

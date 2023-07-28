@@ -9,7 +9,7 @@ class InternshipCompanyJobTitleController extends Controller
 {
     public function index()
     {
-        $jobTitles = InternshipCompanyJobTitle::all();
+        $jobTitles = InternshipCompanyJobTitle::with('internship')->get();
         return response()->json(["error" => false, "message" => "success", "data" => $jobTitles]);
     }
 
@@ -24,7 +24,7 @@ class InternshipCompanyJobTitleController extends Controller
         if (auth()->check()) {
             auth()->user()->id;
             $jobTitle = InternshipCompanyJobTitle::create($data);
-    
+
             return response()->json(["error" => false, "message" => "Job title created successfully", "data" => $jobTitle]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);
@@ -60,7 +60,7 @@ class InternshipCompanyJobTitleController extends Controller
         if (auth()->check()) {
             auth()->user()->id;
             $jobTitle->update($data);
-    
+
             return response()->json(["error" => false, "message" => "Job title updated successfully", "data" => $jobTitle]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);
@@ -79,7 +79,7 @@ class InternshipCompanyJobTitleController extends Controller
         if (auth()->check()) {
             auth()->user()->id;
             $jobTitle->delete();
-    
+
             return response()->json(["error" => false, "message" => "Job title deleted successfully"]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);

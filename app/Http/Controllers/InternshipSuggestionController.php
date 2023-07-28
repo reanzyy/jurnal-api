@@ -9,7 +9,7 @@ class InternshipSuggestionController extends Controller
 {
     public function index()
     {
-        $suggestions = InternshipSuggestion::all();
+        $suggestions = InternshipSuggestion::with('internship', 'companyEmployee', 'approvalUser')->get();
         return response()->json(["error" => false, "message" => "success", "data" => $suggestions]);
     }
 

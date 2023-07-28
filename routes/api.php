@@ -12,6 +12,7 @@ use App\Http\Controllers\SchoolYearsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\StudentDraftController;
 use App\Http\Controllers\CompanyAdvisorController;
+use App\Http\Controllers\InternshipCompanyController;
 use App\Http\Controllers\InternshipRuleController;
 use App\Http\Controllers\InternshipJournalController;
 use App\Http\Controllers\InternshipEquipmentController;
@@ -46,12 +47,22 @@ Route::group([
 
 ], function ($router) {
 
-    Route::post('register', [AuthController::class, 'register']);
+    Route::get('register/{identity}', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
-    Route::post('me', [AuthController::class, 'me']);
+    Route::get('me', [AuthController::class, 'me']);
+    Route::get('profile', [StudentController::class, 'profile']);
 });
+
+Route::get('profile/personal', [StudentController::class, 'profile_personal']);
+Route::put('profile/personal', [StudentController::class, 'update_profile_personal']);
+
+Route::get('profile/parent', [StudentController::class, 'profile_parent']);
+Route::put('profile/parent', [StudentController::class, 'update_profile_parent']);
+
+Route::get('profile/schedule-internship', [StudentController::class, 'profile_schedule']);
+Route::put('profile/schedule-internship', [StudentController::class, 'update_profile_schedule_internship']);
 
 Route::apiResource('students', StudentController::class);
 Route::apiResource('school-years', SchoolYearsController::class);
@@ -71,3 +82,4 @@ Route::apiResource('internship_equipment', InternshipEquipmentController::class)
 Route::apiResource('internship_rules', InternshipRuleController::class);
 Route::apiResource('internship_company_rules', InternshipCompanyRuleController::class);
 Route::apiResource('internship_competencies', InternshipCompetencyController::class);
+Route::apiResource('internship_company', InternshipCompanyController::class);

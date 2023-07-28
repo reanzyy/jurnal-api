@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class InternshipEquipment extends Model
 {
+    protected $table = "internship_equipments";
+
     protected $fillable = [
         'internship_id',
         'tool',
@@ -18,4 +20,3 @@ class InternshipEquipment extends Model
         return $this->belongsTo(Internship::class);
     }
 }
-
