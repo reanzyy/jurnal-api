@@ -21,6 +21,7 @@ use App\Http\Controllers\InternshipCompanyEmployeeController;
 use App\Http\Controllers\InternshipCompanyJobTitleController;
 use App\Http\Controllers\InternshipCompanyRuleController;
 use App\Http\Controllers\InternshipCompetencyController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SchoolAdvisorController;
 use App\Models\School;
 use App\Models\SchoolAdvisor;
@@ -55,14 +56,16 @@ Route::group([
     Route::get('profile', [StudentController::class, 'profile']);
 });
 
-Route::get('profile/personal', [StudentController::class, 'profile_personal']);
-Route::put('profile/personal', [StudentController::class, 'update_profile_personal']);
+Route::get('profile/personal', [ProfileController::class, 'profile_personal']);
+Route::post('profile/upload', [ProfileController::class, "upload"]);
+// Route::put('profile/updatephoto', [ProfileController::class, "updateImage"]);
+Route::put('profile/personal', [ProfileController::class, 'update_profile_personal']);
 
-Route::get('profile/parent', [StudentController::class, 'profile_parent']);
-Route::put('profile/parent', [StudentController::class, 'update_profile_parent']);
+Route::get('profile/parent', [ProfileController::class, 'profile_parent']);
+Route::put('profile/parent', [ProfileController::class, 'update_profile_parent']);
 
-Route::get('profile/schedule-internship', [StudentController::class, 'profile_schedule']);
-Route::put('profile/schedule-internship', [StudentController::class, 'update_profile_schedule_internship']);
+Route::get('profile/schedule-internship', [ProfileController::class, 'profile_schedule']);
+Route::put('profile/schedule-internship', [ProfileController::class, 'update_profile_schedule_internship']);
 
 Route::apiResource('students', StudentController::class);
 Route::apiResource('school-years', SchoolYearsController::class);

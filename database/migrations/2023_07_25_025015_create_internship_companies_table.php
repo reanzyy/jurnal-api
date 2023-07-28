@@ -14,9 +14,9 @@ class CreateInternshipCompaniesTable extends Migration
     public function up()
     {
         Schema::create('internship_companies', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('internship_id');
-            $table->integer('since', 255);
+            $table->id(); // This sets the 'id' column as the primary key and auto-incrementing.
+            $table->bigInteger('internship_id')->unsigned()->notNull();
+            $table->integer('since')->notNull();
             $table->json('sectors');
             $table->json('services');
             $table->text('address');
@@ -26,11 +26,8 @@ class CreateInternshipCompaniesTable extends Migration
             $table->string('director', 255);
             $table->string('director_phone', 255);
             $table->text('advisors');
-            $table->string('structure');
-            $table->timestamps();
-
-            // Define foreign key constraint for 'internship_id' column
-            // $table->foreign('internship_id')->references('id')->on('internships');
+            $table->string('structure', 255);
+            $table->timestamps(); // This creates 'created_at' and 'updated_at' columns.
         });
     }
 

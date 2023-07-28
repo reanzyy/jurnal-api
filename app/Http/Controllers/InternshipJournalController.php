@@ -9,11 +9,43 @@ use App\Models\InternshipJournal;
 
 class InternshipJournalController extends Controller
 {
+
+
+
     public function index()
     {
-        $journals = InternshipJournal::with('internship', 'competency', 'approvalUser')->get();
-        return response()->json(["error" => false, "message" => "success", "data" => $journals]);
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if ($user) {
+                $journals = InternshipJournal::with('internship', 'competency', 'approvalUser')
+                    ->select("internship_journals.*")
+                    ->join("internships", "internships.id", "=", "internship_journals.internship_id")
+                    ->where("internships.user_id", $user->id)
+                    ->get();
+
+                $filteredJournals = [];
+
+                foreach ($journals as $journal) {
+                    $filteredJournals[] = [
+                        "id" => $journal->id,
+                        "status" => $journal->status,
+                        "date" => $journal->date,
+                        // Add other desired properties here
+                    ];
+                }
+
+                return response()->json(["error" => false, "message" => "success", "data" => $filteredJournals]);
+            } else {
+                return response()->json(['message' => 'User not authenticated.'], 401);
+            }
+        } else {
+            return response()->json(['message' => 'User not authenticated.'], 401);
+        }
     }
+
+
+
 
 
     public function store(Request $request)
@@ -29,10 +61,8 @@ class InternshipJournalController extends Controller
                 "approval_at" => "nullable|timestamp",
             ]);
 
-            // Create a new InternshipJournal model with the validated data
             $journal = new InternshipJournal($validatedData);
 
-            // Associate the journal with the related Internship model
             $internship = Internship::find($validatedData['internship_id']);
             $internship->journals()->save($journal);
 
