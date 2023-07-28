@@ -59,6 +59,11 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
+
     /**
      * Get all of the comments for the Student
      *
@@ -72,5 +77,10 @@ class User extends Authenticatable implements JWTSubject
     public static function findById($identity)
     {
         return self::find($identity);
+    }
+
+    public function internship()
+    {
+        return $this->hasOne(Internship::class);
     }
 }

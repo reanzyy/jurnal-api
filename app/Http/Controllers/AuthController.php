@@ -46,12 +46,10 @@ class AuthController extends Controller
         $credentials = request(['username', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['message' => 'NIS atau Password Anda salah'], 401);
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return response()->json([
-            "token" => $token,
-        ]);
+        return $this->respondWithToken($token);
     }
 
 
@@ -96,10 +94,12 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        $expiration = auth()->factory()->getTTL() * 1440;
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => $expiration,
         ]);
     }
 }

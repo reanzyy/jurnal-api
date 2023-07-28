@@ -37,4 +37,14 @@ class Student extends Model
     {
         return $this->belongsTo(Student::class, 'user_id', 'id');
     }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
+
+    public function internship()
+    {
+        return $this->hasOne(Internship::class);
+    }
 }

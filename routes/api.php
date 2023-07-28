@@ -52,7 +52,17 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::get('me', [AuthController::class, 'me']);
+    Route::get('profile', [StudentController::class, 'profile']);
 });
+
+Route::get('profile/personal', [StudentController::class, 'profile_personal']);
+Route::put('profile/personal', [StudentController::class, 'update_profile_personal']);
+
+Route::get('profile/parent', [StudentController::class, 'profile_parent']);
+Route::put('profile/parent', [StudentController::class, 'update_profile_parent']);
+
+Route::get('profile/schedule-internship', [StudentController::class, 'profile_schedule']);
+Route::put('profile/schedule-internship', [StudentController::class, 'update_profile_schedule_internship']);
 
 Route::apiResource('students', StudentController::class);
 Route::apiResource('school-years', SchoolYearsController::class);
