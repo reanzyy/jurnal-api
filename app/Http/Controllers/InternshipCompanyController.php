@@ -6,6 +6,7 @@ use App\Models\Internship;
 use Illuminate\Http\Request;
 use App\Models\InternshipCompany;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class InternshipCompanyController extends Controller
 {
@@ -105,35 +106,35 @@ class InternshipCompanyController extends Controller
         }
     }
 
-    public function updateImage(Request $request, $id)
+
+    public function updateImage(Request $request)
     {
-        $data = $request->validate([
-            "structure" => "image", // Make sure the "structure" field is an image
+        $validator  = Validator::make($request->all(), [
+            "structure" => "nullable|image"
         ]);
 
-        $internship_company = InternshipCompany::find($id);
-
-        if (!$internship_company) {
-            return response()->json(["message" => "Internship Company not found"], 404);
-        }
-
-        if ($request->file('structure')) {
-            $structure = time() . '.' . $request->file('structure')->getClientOriginalExtension();
-            $request->file('structure')->move(public_path("structure"), $structure);
-
-            // Update the "structure" attribute in the database
-            $internship_company->structure = $structure;
-        }
-
-        // Save the changes to the database
-        $internship_company->save();
-
-        if (auth()->check()) {
-            // Get the authenticated user's ID (you can use it for further processing if needed)
-            $authenticatedUserId = auth()->user()->id;
-            return response()->json(["message" => "Internship Company updated successfully", "data" => $internship_company], 200);
+        if ($validator->fails()) {
+            $error = $validator->error()->all()[0];
+            return response()->json(["error" => true, "message" => $error], 422);
         } else {
-            return response()->json(["error" => true, "message" => "User not authenticated"], 401);
+            $user = InternshipCompany::join("internships", "internships.id", "=", "internship_companies.internship_id")
+                ->where("internships.user_id", auth()->user()->id)
+                ->first();
+
+            if ($request->structure && $request->structure->isValid()) {
+                $fileName = time() . '.' . $request->structure->extension();
+                $request->structure->move(public_path("structure"), $fileName);
+                $path = "public/images/$fileName";
+                $user->structure = $path;
+            }
+
+            $user->update();
+
+            $filteredData = [
+                'structure' => $user->structure
+            ];
+
+            return response()->json(["message" => "Organization structure updated successfully", "data" => $filteredData]);
         }
     }
 }

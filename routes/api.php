@@ -48,13 +48,9 @@ Route::group([
     'prefix' => 'auth'
 
 ], function ($router) {
-
-    Route::get('register/{identity}', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
     Route::get('me', [AuthController::class, 'me']);
-    Route::get('profile', [StudentController::class, 'profile']);
 });
 
 Route::get('profile/personal', [ProfileController::class, 'profile_personal']);
@@ -81,7 +77,7 @@ Route::apiResource('information/equipment', InternshipEquipmentController::class
 Route::apiResource('information/company-rules', InternshipCompanyRuleController::class);
 
 Route::get('information/organization', [InternshipCompanyController::class, 'getOrganization']);
-Route::put('information/organization/{id}', [InternshipCompanyController::class, 'updateImage']);
+Route::post('information/organization', [InternshipCompanyController::class, 'updateImage']);
 
 
 // Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
