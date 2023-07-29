@@ -9,8 +9,33 @@ class InternshipCompanyRuleController extends Controller
 {
     public function index()
     {
-        $companyRules = InternshipCompanyRule::with('internship')->get();
-        return response()->json(['message' => 'Success', 'data' => $companyRules]);
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if ($user) {
+                $rules = InternshipCompanyRule::select("internship_company_rules.*", "internships.user_id")
+                    ->join("internships", "internships.id", "=", "internship_company_rules.internship_id")
+                    ->where("internships.user_id", $user->id)
+                    ->get();
+
+                $filteredRules = [];
+                foreach ($rules as $rule) {
+
+                    $filteredRules[] = [
+                        "id" => $rule->id,
+                        "internship_id" => $rule->internship_id,
+                        "sequence" => $rule->sequence,
+                        "description" => $rule->description,
+                    ];
+                }
+
+                return response()->json(["error" => false, "message" => "success", "data" => $filteredRules]);
+            } else {
+                return response()->json(['message' => 'User not authenticated.'], 401);
+            }
+        } else {
+            return response()->json(['message' => 'User not authenticated.'], 401);
+        }
     }
 
     public function store(Request $request)

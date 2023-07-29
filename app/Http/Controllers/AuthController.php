@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -94,12 +93,12 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        $expiration = auth()->factory()->getTTL() * 1440;
+        $expirationInMinutes = 10 * 60;
 
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $expiration,
+            'expires_in' => auth()->factory()->getTTL() * $expirationInMinutes,
         ]);
     }
 }

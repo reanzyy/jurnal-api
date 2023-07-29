@@ -19,7 +19,6 @@ class InternshipCompanyEmployee extends Model
 
     public function jobTitle()
     {
-        return $this->hasMany(InternshipCompanyJobTitle::class, 'id', 'job_title_id');
+        return $this->belongsTo(InternshipCompanyJobTitle::class, 'job_title_id');
     }
 }
-

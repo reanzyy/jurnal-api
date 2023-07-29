@@ -12,6 +12,7 @@ use App\Http\Controllers\SchoolYearsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\StudentDraftController;
 use App\Http\Controllers\CompanyAdvisorController;
+use App\Http\Controllers\InformasiUmumController;
 use App\Http\Controllers\InternshipCompanyController;
 use App\Http\Controllers\InternshipRuleController;
 use App\Http\Controllers\InternshipJournalController;
@@ -67,22 +68,34 @@ Route::put('profile/parent', [ProfileController::class, 'update_profile_parent']
 Route::get('profile/schedule-internship', [ProfileController::class, 'profile_schedule']);
 Route::put('profile/schedule-internship', [ProfileController::class, 'update_profile_schedule_internship']);
 
-Route::apiResource('students', StudentController::class);
-Route::apiResource('school-years', SchoolYearsController::class);
-Route::apiResource('classrooms', ClassroomController::class);
-Route::apiResource('schools', SchoolController::class);
-Route::apiResource('student-drafts', StudentDraftController::class);
-Route::apiResource('companies', CompanyController::class);
-Route::apiResource('notifications', NotificationController::class);
-Route::apiResource('company_advisors', CompanyAdvisorController::class);
-Route::apiResource('school_advisors', SchoolAdvisorController::class);
-Route::apiResource('internships', InternshipController::class);
-Route::apiResource('internship_company_job_titles', InternshipCompanyJobTitleController::class);
-Route::apiResource('internship_company_employee', InternshipCompanyEmployeeController::class);
-Route::apiResource('internship_journal', InternshipJournalController::class);
-Route::apiResource('internship_suggestion', InternshipSuggestionController::class);
-Route::apiResource('internship_equipment', InternshipEquipmentController::class);
-Route::apiResource('internship_rules', InternshipRuleController::class);
-Route::apiResource('internship_company_rules', InternshipCompanyRuleController::class);
-Route::apiResource('internship_competencies', InternshipCompetencyController::class);
-Route::apiResource('internship_company', InternshipCompanyController::class);
+Route::apiResource('journals', InternshipJournalController::class);
+
+Route::get('information/internship', [InformasiUmumController::class, 'getInformation']);
+
+Route::apiResource('information/company', InternshipCompanyController::class);
+Route::apiResource('information/job-title', InternshipCompanyJobTitleController::class);
+Route::apiResource('information/employee', InternshipCompanyEmployeeController::class);
+Route::apiResource('information/competency', InternshipCompetencyController::class);
+Route::apiResource('information/suggestion', InternshipSuggestionController::class);
+Route::apiResource('information/equipment', InternshipEquipmentController::class);
+Route::apiResource('information/company-rules', InternshipCompanyRuleController::class);
+
+Route::get('information/organization', [InternshipCompanyController::class, 'getOrganization']);
+Route::put('information/organization/{id}', [InternshipCompanyController::class, 'updateImage']);
+
+
+// Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+// Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
+
+
+// Route::apiResource('students', StudentController::class);
+// Route::apiResource('school-years', SchoolYearsController::class);
+// Route::apiResource('classrooms', ClassroomController::class);
+// Route::apiResource('schools', SchoolController::class);
+// Route::apiResource('student-drafts', StudentDraftController::class);
+// Route::apiResource('companies', CompanyController::class);
+// Route::apiResource('notifications', NotificationController::class);
+// Route::apiResource('company_advisors', CompanyAdvisorController::class);
+// Route::apiResource('school_advisors', SchoolAdvisorController::class);
+// Route::apiResource('internships', InternshipController::class);
+// Route::apiResource('internship_rules', InternshipRuleController::class);

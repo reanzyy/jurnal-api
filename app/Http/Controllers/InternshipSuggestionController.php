@@ -9,9 +9,40 @@ class InternshipSuggestionController extends Controller
 {
     public function index()
     {
-        $suggestions = InternshipSuggestion::with('internship', 'companyEmployee', 'approvalUser')->get();
-        return response()->json(["error" => false, "message" => "success", "data" => $suggestions]);
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if ($user) {
+                $suggestions = InternshipSuggestion::select("internship_suggestions.*", "internships.user_id")
+                    ->join("internships", "internships.id", "=", "internship_suggestions.internship_id")
+                    ->where("internships.user_id", $user->id)
+                    ->get();
+
+                $filteredSuggestion = [];
+                foreach ($suggestions as $suggestion) {
+                    $employeeData = [
+                        "name" => $suggestion->companyEmployee->name,
+                    ];
+
+                    $employeeData['job_title'] = $suggestion->companyEmployee->jobTitle->name;
+
+                    $filteredSuggestion[] = [
+                        "id" => $suggestion->id,
+                        "suggest" => $suggestion->suggest,
+                        "employee" => $employeeData,
+                    ];
+                }
+
+                return response()->json(["error" => false, "message" => "success", "data" => $filteredSuggestion]);
+            } else {
+                return response()->json(['message' => 'User not authenticated.'], 401);
+            }
+        } else {
+            return response()->json(['message' => 'User not authenticated.'], 401);
+        }
     }
+
+
 
     public function store(Request $request)
     {
@@ -20,7 +51,7 @@ class InternshipSuggestionController extends Controller
             "company_employee_id" => "required|integer|exists:internship_company_employees,id",
             "suggest" => "required|string",
             "approval_user_id" => "nullable|integer|exists:users,id",
-            "approval_by" => "required|string",
+            "approval_by" => "string",
             "approval_at" => "nullable|timestamp",
         ]);
 

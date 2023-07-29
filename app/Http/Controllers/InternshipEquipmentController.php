@@ -9,8 +9,33 @@ class InternshipEquipmentController extends Controller
 {
     public function index()
     {
-        $equipments = InternshipEquipment::with('internship')->get();
-        return response()->json(["error" => false, "message" => "success", "data" => $equipments]);
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if ($user) {
+                $equipments = InternshipEquipment::select("internship_equipments.*", "internships.user_id")
+                    ->join("internships", "internships.id", "=", "internship_equipments.internship_id")
+                    ->where("internships.user_id", $user->id)
+                    ->get();
+
+                $filteredEquipment = [];
+                foreach ($equipments as $equipment) {
+
+                    $filteredEquipment[] = [
+                        "id" => $equipment->id,
+                        "tool" => $equipment->tool,
+                        "specification" => $equipment->specification,
+                        "utility" => $equipment->utility,
+                    ];
+                }
+
+                return response()->json(["error" => false, "message" => "success", "data" => $filteredEquipment]);
+            } else {
+                return response()->json(['message' => 'User not authenticated.'], 401);
+            }
+        } else {
+            return response()->json(['message' => 'User not authenticated.'], 401);
+        }
     }
 
     public function store(Request $request)

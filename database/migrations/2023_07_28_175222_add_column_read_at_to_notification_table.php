@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('internship_journals', function (Blueprint $table) {
-            $table->enum('status', ['Pending', 'Approved', 'Rejected']);
+        Schema::table('notifications', function (Blueprint $table) {
+            $table->timestamp('read_at')->nullable();
         });
     }
 
@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('internship_journals', function (Blueprint $table) {
+        Schema::table('notification', function (Blueprint $table) {
             //
         });
     }

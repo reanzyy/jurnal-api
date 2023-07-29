@@ -31,7 +31,6 @@ class InternshipJournalController extends Controller
                         "id" => $journal->id,
                         "status" => $journal->status,
                         "date" => $journal->date,
-                        // Add other desired properties here
                     ];
                 }
 
@@ -44,16 +43,17 @@ class InternshipJournalController extends Controller
         }
     }
 
-
-
-
-
     public function store(Request $request)
     {
         if (auth()->check()) {
+            $user = auth()->user()->load('internship');
+
+            // $internship = $user->internship->load('journals');   
+
             $validatedData = $request->validate([
                 "internship_id" => 'required',
                 "date" => 'required|date',
+                "activity_image" => 'required',
                 "activity" => 'required',
                 "competency_id" => 'required',
                 "approval_user_id" => "integer|exists:users,id",
@@ -61,7 +61,18 @@ class InternshipJournalController extends Controller
                 "approval_at" => "nullable|timestamp",
             ]);
 
+            if ($images = $request->hasFile("activity_image")) {
+                $images = time() . '.' . $request->activity_image->extension();
+                $request->activity_image->move(public_path("images"), $images);
+            } else {
+                unset($validatedData['activity_image']);
+            }
+
             $journal = new InternshipJournal($validatedData);
+
+            // Pastikan Anda mengatur activity_image sebelum menyimpan jurnal
+            $journal->activity_image = $images;
+            $journal->save();
 
             $internship = Internship::find($validatedData['internship_id']);
             $internship->journals()->save($journal);
@@ -73,6 +84,7 @@ class InternshipJournalController extends Controller
     }
 
 
+
     public function show($id)
     {
         $journal = InternshipJournal::find($id);
@@ -81,7 +93,14 @@ class InternshipJournalController extends Controller
             return response()->json(["error" => true, "message" => "Journal not found"], 404);
         }
 
-        return response()->json(["error" => false, "message" => "success", "data" => $journal]);
+        $filteredJournals = [
+            "id" => $journal->id,
+            "activity_image" => $journal->activity_image,
+            "activity" => $journal->activity,
+            "approval_by" => $journal->approval_by,
+        ];
+
+        return response()->json(["error" => false, "message" => "success", "data" => $filteredJournals]);
     }
 
     public function update(Request $request, $id)
@@ -90,6 +109,7 @@ class InternshipJournalController extends Controller
             "internship_id" => "integer|exists:internships,id",
             "date" => "date",
             "activity" => "string|max:255",
+            "activity_image" => "image",
             "competency_id" => "integer|exists:internship_competencies,id",
             "approval_user_id" => "integer|exists:users,id",
             "approval_by" => "nullable|string|max:255",
@@ -98,9 +118,22 @@ class InternshipJournalController extends Controller
 
         $journal = InternshipJournal::find($id);
 
+        $images = null;
+
+        if ($images = $request->hasFile("activity_image")) {
+            $images = time() . '.' . $request->activity_image->extension();
+            $request->activity_image->move(public_path("images"), $images);
+        } else {
+            $images = $journal->activity_image;
+        }
+
+        $journal->activity_image = $images;
+        $journal->save();
+
         if (!$journal) {
             return response()->json(["error" => true, "message" => "Journal not found"], 404);
         }
+
 
         if (auth()->check()) {
             auth()->user()->id;
@@ -111,6 +144,7 @@ class InternshipJournalController extends Controller
             return response()->json(["error" => true, "message" => "User not authenticated"]);
         }
     }
+
 
     public function destroy($id)
     {

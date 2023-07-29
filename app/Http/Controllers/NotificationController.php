@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
     public function index()
     {
         $notifications = Notification::all();
+
         return response()->json(["error" => false, "message" => "success", "data" => $notifications]);
     }
 
@@ -24,12 +26,11 @@ class NotificationController extends Controller
         if (auth()->check()) {
             auth()->user()->id;
             $notification = Notification::create($data);
-    
+
             return response()->json(["error" => false, "message" => "Notification created successfully", "data" => $notification]);
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);
         }
-
     }
 
     public function show($id)
@@ -73,5 +74,20 @@ class NotificationController extends Controller
         $notification->delete();
 
         return response()->json(["error" => false, "message" => "Notification deleted successfully"]);
+    }
+
+    public function markAsRead($id)
+    {
+        $notification = Auth::user()->notifications()->findOrFail($id);
+        $notification->markAsRead();
+
+        return response()->json(['message' => 'Notification marked as read.']);
+    }
+
+    public function markAllRead()
+    {
+        Auth::user()->unreadNotifications->markAsRead();
+
+        return response()->json(['message' => 'All notifications marked as read.']);
     }
 }

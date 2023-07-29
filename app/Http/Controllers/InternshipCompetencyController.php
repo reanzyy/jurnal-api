@@ -9,8 +9,31 @@ class InternshipCompetencyController extends Controller
 {
     public function index()
     {
-        $competencies = InternshipCompetency::with('internship')->get();
-        return response()->json(["error" => false, "message" => "success", "data" => $competencies]);
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if ($user) {
+                $competencies = InternshipCompetency::select("internship_competencies.*", "internships.*")
+                    ->join("internships", "internships.id", "=", "internship_competencies.internship_id")
+                    ->where("internships.user_id", $user->id)
+                    ->get();
+
+                $filteredCompetency = [];
+                foreach ($competencies as $competency) {
+
+                    $filteredCompetency[] = [
+                        "competency" => $competency->competency,
+                        "description" => $competency->description,
+                    ];
+                }
+
+                return response()->json(["error" => false, "message" => "success", "data" => $filteredCompetency]);
+            } else {
+                return response()->json(['message' => 'User not authenticated.'], 401);
+            }
+        } else {
+            return response()->json(['message' => 'User not authenticated.'], 401);
+        }
     }
 
     public function store(Request $request)
@@ -64,7 +87,6 @@ class InternshipCompetencyController extends Controller
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);
         }
-
     }
 
     public function destroy($id)
@@ -83,6 +105,5 @@ class InternshipCompetencyController extends Controller
         } else {
             return response()->json(["error" => true, "message" => "User not authenticated"]);
         }
-
     }
 }

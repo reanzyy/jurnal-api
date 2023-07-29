@@ -9,7 +9,7 @@ class CompanyAdvisorController extends Controller
 {
     public function index()
     {
-        $companyAdvisors = CompanyAdvisor::with('company', 'user')->get();
+        $companyAdvisors = CompanyAdvisor::with('user')->get();
         return response()->json(["error" => false, "message" => "success", "data" => $companyAdvisors]);
     }
 

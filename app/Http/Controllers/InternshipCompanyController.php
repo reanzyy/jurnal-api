@@ -2,53 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\InternshipCompany;
+use App\Models\Internship;
 use Illuminate\Http\Request;
+use App\Models\InternshipCompany;
+use Illuminate\Support\Facades\Storage;
 
 class InternshipCompanyController extends Controller
 {
     public function index()
     {
-        $internship_company = InternshipCompany::with('internship')->get();
-        return response()->json(["message" => "Success", "data" => $internship_company]);
-    }
-
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            "internship_id" => "required|integer",
-            "since" => "required|integer",
-            "sectors" => "array",
-            "services" => "array",
-            "address" => "nullable|string",
-            "telephone" => "nullable|string",
-            "email" => "nullable|string",
-            "website" => "nullable|string",
-            "director" => "nullable|string",
-            "director_phone" => "nullable|string",
-            "advisors" => "nullable|string",
-            "structure" => "nullable|string",
-        ]);
-
         if (auth()->check()) {
-            auth()->user()->id;
-            $internship_company = InternshipCompany::create($data);
+            $user = auth()->user();
 
-            return response()->json(["message" => "Company created successfully", "data" => $internship_company]);
+            if ($user) {
+                $companies = InternshipCompany::select("internship_companies.*", "internships.user_id")
+                    ->join("internships", "internships.id", "=", "internship_companies.internship_id")
+                    ->where("internships.user_id", $user->id)
+                    ->get();
+
+                $filteredCompanies = [];
+                foreach ($companies as $company) {
+                    $filteredCompanies[] = [
+                        "id" => $company->id,
+                        "since" => $company->since,
+                        "sectors" => $company->sectors,
+                        "services" => $company->services,
+                        "address" => $company->address,
+                        "telephone" => $company->telephone,
+                        "email" => $company->email,
+                        "website" => $company->website,
+                        "director" => $company->director,
+                        "director_phone" => $company->director_phone,
+                        "advisors" => $company->advisors,
+                    ];
+                }
+
+                return response()->json(["error" => false, "message" => "success", "data" => $filteredCompanies]);
+            } else {
+                return response()->json(['message' => 'User not authenticated.'], 401);
+            }
         } else {
-            return response()->json(["error" => true, "message" => "User not authenticated"]);
+            return response()->json(['message' => 'User not authenticated.'], 401);
         }
-
-    }
-
-    public function show($id)
-    {
-        $internship_company = InternshipCompany::find($id);
-
-        if (!$internship_company) {
-            return response()->json(["message" => "Internship Company not found"], 404);
-        }
-        return response()->json(["message" => "Success", "data" => $internship_company]);
     }
 
     public function update(Request $request, $id)
@@ -64,8 +59,8 @@ class InternshipCompanyController extends Controller
             "website" => "nullable|string",
             "director" => "nullable|string",
             "director_phone" => "nullable|string",
-            "advisors" => "nullable|string",
-            "structure" => "nullable|string",
+            "advisors" => "array|nullable",
+            "structure" => "nullable|image",
         ]);
 
         $internship_company = InternshipCompany::find($id);
@@ -83,22 +78,62 @@ class InternshipCompanyController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function getOrganization()
     {
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if ($user) {
+                $companies = InternshipCompany::select("internship_companies.*", "internships.user_id")
+                    ->join("internships", "internships.id", "=", "internship_companies.internship_id")
+                    ->where("internships.user_id", $user->id)
+                    ->get();
+
+                $filteredCompanies = [];
+                foreach ($companies as $company) {
+                    $filteredCompanies[] = [
+                        "structure" => $company->structure,
+                    ];
+                }
+
+                return response()->json(["error" => false, "message" => "success", "data" => $filteredCompanies]);
+            } else {
+                return response()->json(['message' => 'User not authenticated.'], 401);
+            }
+        } else {
+            return response()->json(['message' => 'User not authenticated.'], 401);
+        }
+    }
+
+    public function updateImage(Request $request, $id)
+    {
+        $data = $request->validate([
+            "structure" => "image", // Make sure the "structure" field is an image
+        ]);
+
         $internship_company = InternshipCompany::find($id);
 
         if (!$internship_company) {
             return response()->json(["message" => "Internship Company not found"], 404);
         }
 
-        if (auth()->check()) {
-            auth()->user()->id;
-            $internship_company->delete();
+        if ($request->file('structure')) {
+            $structure = time() . '.' . $request->file('structure')->getClientOriginalExtension();
+            $request->file('structure')->move(public_path("structure"), $structure);
 
-            return response()->json(["message" => "Internship Company deleted successfully"]);
-        } else {
-            return response()->json(["error" => true, "message" => "User not authenticated"]);
+            // Update the "structure" attribute in the database
+            $internship_company->structure = $structure;
         }
 
+        // Save the changes to the database
+        $internship_company->save();
+
+        if (auth()->check()) {
+            // Get the authenticated user's ID (you can use it for further processing if needed)
+            $authenticatedUserId = auth()->user()->id;
+            return response()->json(["message" => "Internship Company updated successfully", "data" => $internship_company], 200);
+        } else {
+            return response()->json(["error" => true, "message" => "User not authenticated"], 401);
+        }
     }
 }

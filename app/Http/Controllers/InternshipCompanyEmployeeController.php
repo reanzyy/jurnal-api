@@ -9,9 +9,36 @@ class InternshipCompanyEmployeeController extends Controller
 {
     public function index()
     {
-        $employees = InternshipCompanyEmployee::with('internship', 'jobTitle')->get();
-        return response()->json(["error" => false, "message" => "success", "data" => $employees]);
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if ($user) {
+                $employees = InternshipCompanyEmployee::select("internship_company_employees.*", "internships.*")
+                    ->join("internships", "internships.id", "=", "internship_company_employees.internship_id")
+                    ->where("internships.user_id", $user->id)
+                    ->get();
+
+                $filteredEmployee = [];
+                foreach ($employees as $employee) {
+
+                    $filteredEmployee[] = [
+                        "id" => $employee->id,
+                        "name" => $employee->name,
+                        "job_title" => $employee->jobTitle,
+                    ];
+                }
+
+                return response()->json(["error" => false, "message" => "success", "data" => $filteredEmployee]);
+            } else {
+                return response()->json(['message' => 'User not authenticated.'], 401);
+            }
+        } else {
+            return response()->json(['message' => 'User not authenticated.'], 401);
+        }
     }
+
+
+
 
     public function store(Request $request)
     {

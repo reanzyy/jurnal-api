@@ -42,7 +42,6 @@ class ProfileController extends Controller
 
                 $filteredStudent = [
                     'id' => $student->id,
-                    'identity' => $student->identity,
                     'name' => $student->name,
                     'phone' => $student->phone,
                     'birth_date' => $student->birth_date,
