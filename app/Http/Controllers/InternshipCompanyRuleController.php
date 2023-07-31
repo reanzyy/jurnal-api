@@ -7,13 +7,38 @@ use Illuminate\Http\Request;
 
 class InternshipCompanyRuleController extends Controller
 {
-    public function index()
+    public function getCompanyRules()
     {
-        $companyRules = InternshipCompanyRule::all();
-        return response()->json(['message' => 'Success', 'data' => $companyRules]);
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if ($user) {
+                $rules = InternshipCompanyRule::select("internship_company_rules.*", "internships.user_id")
+                    ->join("internships", "internships.id", "=", "internship_company_rules.internship_id")
+                    ->where("internships.user_id", $user->id)
+                    ->get();
+
+                $filteredRules = [];
+                foreach ($rules as $rule) {
+
+                    $filteredRules[] = [
+                        "id" => $rule->id,
+                        "internship_id" => $rule->internship_id,
+                        "sequence" => $rule->sequence,
+                        "description" => $rule->description,
+                    ];
+                }
+
+                return response()->json(["error" => false, "message" => "success", "data" => $filteredRules]);
+            } else {
+                return response()->json(['message' => 'User not authenticated.'], 401);
+            }
+        } else {
+            return response()->json(['message' => 'User not authenticated.'], 401);
+        }
     }
 
-    public function store(Request $request)
+    public function storeCompanyRules(Request $request)
     {
         $data = $request->validate([
             'internship_id' => 'required|integer|exists:internships,id',
@@ -22,7 +47,7 @@ class InternshipCompanyRuleController extends Controller
         ]);
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $companyRule = InternshipCompanyRule::create($data);
 
             return response()->json(['message' => 'Internship Company Rules created successfully', 'data' => $companyRule]);
@@ -42,7 +67,7 @@ class InternshipCompanyRuleController extends Controller
         return response()->json(['message' => 'Success', 'data' => $companyRule]);
     }
 
-    public function update(Request $request, $id)
+    public function updateCompanyRules(Request $request, $id)
     {
         $data = $request->validate([
             'internship_id' => 'required|integer|exists:internships,id',
@@ -57,7 +82,7 @@ class InternshipCompanyRuleController extends Controller
         }
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $companyRule->update($data);
 
             return response()->json(['message' => 'Internship Company Rules updated successfully', 'data' => $companyRule]);
@@ -66,7 +91,7 @@ class InternshipCompanyRuleController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroyCompanyRules($id)
     {
         $companyRule = InternshipCompanyRule::find($id);
 
@@ -75,7 +100,7 @@ class InternshipCompanyRuleController extends Controller
         }
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $companyRule->delete();
 
             return response()->json(['message' => 'Internship Company Rules deleted successfully']);

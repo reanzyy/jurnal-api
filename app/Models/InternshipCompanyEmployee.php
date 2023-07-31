@@ -22,4 +22,3 @@ class InternshipCompanyEmployee extends Model
         return $this->belongsTo(InternshipCompanyJobTitle::class, 'job_title_id');
     }
 }
-

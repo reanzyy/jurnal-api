@@ -7,25 +7,56 @@ use Illuminate\Http\Request;
 
 class InternshipSuggestionController extends Controller
 {
-    public function index()
+    public function getCompanySuggestion()
     {
-        $suggestions = InternshipSuggestion::all();
-        return response()->json(["error" => false, "message" => "success", "data" => $suggestions]);
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if ($user) {
+                $suggestions = InternshipSuggestion::select("internship_suggestions.*", "internships.user_id")
+                    ->join("internships", "internships.id", "=", "internship_suggestions.internship_id")
+                    ->where("internships.user_id", $user->id)
+                    ->get();
+
+                $filteredSuggestion = [];
+                foreach ($suggestions as $suggestion) {
+                    $employeeData = [
+                        "name" => $suggestion->companyEmployee->name,
+                    ];
+
+                    $employeeData['job_title'] = $suggestion->companyEmployee->jobTitle->name;
+
+                    $filteredSuggestion[] = [
+                        "id" => $suggestion->id,
+                        "suggest" => $suggestion->suggest,
+                        "employee" => $employeeData,
+                    ];
+                }
+
+                return response()->json(["error" => false, "message" => "success", "data" => $filteredSuggestion]);
+            } else {
+                return response()->json(['message' => 'User not authenticated.'], 401);
+            }
+        } else {
+            return response()->json(['message' => 'User not authenticated.'], 401);
+        }
     }
 
-    public function store(Request $request)
+
+
+    public function storeCompanySuggestion(Request $request)
     {
         $data = $request->validate([
             "internship_id" => "required|integer|exists:internships,id",
             "company_employee_id" => "required|integer|exists:internship_company_employees,id",
             "suggest" => "required|string",
             "approval_user_id" => "nullable|integer|exists:users,id",
-            "approval_by" => "required|string",
+            "approval_by" => "string",
             "approval_at" => "nullable|timestamp",
         ]);
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $suggestion = InternshipSuggestion::create($data);
 
             return response()->json(["error" => false, "message" => "Suggestion created successfully", "data" => $suggestion]);
@@ -45,7 +76,7 @@ class InternshipSuggestionController extends Controller
         return response()->json(["error" => false, "message" => "success", "data" => $suggestion]);
     }
 
-    public function update(Request $request, $id)
+    public function updateCompanySuggestion(Request $request, $id)
     {
         $data = $request->validate([
             "internship_id" => "integer|exists:internships,id",
@@ -63,7 +94,7 @@ class InternshipSuggestionController extends Controller
         }
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $suggestion->update($data);
 
             return response()->json(["error" => false, "message" => "Suggestion updated successfully", "data" => $suggestion]);
@@ -72,7 +103,7 @@ class InternshipSuggestionController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroyCompanySuggestion($id)
     {
         $suggestion = InternshipSuggestion::find($id);
 
@@ -81,7 +112,7 @@ class InternshipSuggestionController extends Controller
         }
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $suggestion->delete();
 
             return response()->json(["error" => false, "message" => "Suggestion deleted successfully"]);

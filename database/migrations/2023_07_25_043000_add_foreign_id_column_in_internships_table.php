@@ -14,23 +14,23 @@ return new class extends Migration
     public function up()
     {
         Schema::table('internships', function (Blueprint $table) {
-            $table->foreign('school_year_id', 'fk_internships_school_year_id')
+            $table->foreign('school_year_id')
                 ->references('id')->on('school_years')
                 ->onUpdate('cascade')->onDelete('cascade');
 
-            $table->foreign('student_id', 'fk_internships_student_id')
+            $table->foreign('student_id')
                 ->references('id')->on('students')
                 ->onUpdate('cascade')->onDelete('cascade');
 
-            $table->foreign('company_id', 'fk_internships_company_id')
+            $table->foreign('company_id')
                 ->references('id')->on('companies')
                 ->onUpdate('cascade')->onDelete('cascade');
 
-            $table->foreign('school_advisor_id', 'fk_internships_school_advisor_id')
+            $table->foreign('school_advisor_id')
                 ->references('id')->on('school_advisors')
                 ->onUpdate('cascade')->onDelete('cascade');
 
-            $table->foreign('company_advisor_id', 'fk_internships_company_advisor_id')
+            $table->foreign('company_advisor_id')
                 ->references('id')->on('company_advisors')
                 ->onUpdate('cascade')->onDelete('cascade');
         });

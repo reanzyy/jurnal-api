@@ -7,13 +7,40 @@ use Illuminate\Http\Request;
 
 class InternshipCompanyEmployeeController extends Controller
 {
-    public function index()
+    public function getCompanyEmployee()
     {
-        $employees = InternshipCompanyEmployee::all();
-        return response()->json(["error" => false, "message" => "success", "data" => $employees]);
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if ($user) {
+                $employees = InternshipCompanyEmployee::select("internship_company_employees.*", "internships.*")
+                    ->join("internships", "internships.id", "=", "internship_company_employees.internship_id")
+                    ->where("internships.user_id", $user->id)
+                    ->get();
+
+                $filteredEmployee = [];
+                foreach ($employees as $employee) {
+
+                    $filteredEmployee[] = [
+                        "id" => $employee->id,
+                        "name" => $employee->name,
+                        "job_title" => $employee->jobTitle,
+                    ];
+                }
+
+                return response()->json(["error" => false, "message" => "success", "data" => $filteredEmployee]);
+            } else {
+                return response()->json(['message' => 'User not authenticated.'], 401);
+            }
+        } else {
+            return response()->json(['message' => 'User not authenticated.'], 401);
+        }
     }
 
-    public function store(Request $request)
+
+
+
+    public function storeCompanyEmployee(Request $request)
     {
         $data = $request->validate([
             "internship_id" => "required|integer|exists:internships,id",
@@ -42,7 +69,7 @@ class InternshipCompanyEmployeeController extends Controller
         return response()->json(["error" => false, "message" => "success", "data" => $employee]);
     }
 
-    public function update(Request $request, $id)
+    public function updateCompanyEmployee(Request $request, $id)
     {
         $data = $request->validate([
             "internship_id" => "integer|exists:internships,id",
@@ -66,7 +93,7 @@ class InternshipCompanyEmployeeController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroyCompanyEmployee($id)
     {
         $employee = InternshipCompanyEmployee::find($id);
 

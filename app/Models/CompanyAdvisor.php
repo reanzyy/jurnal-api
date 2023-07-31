@@ -18,7 +18,7 @@ class CompanyAdvisor extends Model
 
     public function company()
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Company::class, 'id', 'company_id');
     }
 
     public function user()
@@ -26,4 +26,3 @@ class CompanyAdvisor extends Model
         return $this->belongsTo(User::class);
     }
 }
-

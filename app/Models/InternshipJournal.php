@@ -11,6 +11,7 @@ class InternshipJournal extends Model
         'date',
         'activity',
         'competency_id',
+        'activity_image',
         'approval_user_id',
         'approval_by',
         'approval_at',
@@ -23,7 +24,7 @@ class InternshipJournal extends Model
 
     public function competency()
     {
-        return $this->belongsTo(InternshipCompetency::class, 'competency_id');
+        return $this->belongsTo(InternshipCompetency::class);
     }
 
     public function approvalUser()
@@ -31,4 +32,3 @@ class InternshipJournal extends Model
         return $this->belongsTo(User::class, 'approval_user_id');
     }
 }
-

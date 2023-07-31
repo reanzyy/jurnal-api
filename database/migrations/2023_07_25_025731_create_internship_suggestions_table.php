@@ -19,7 +19,7 @@ class CreateInternshipSuggestionsTable extends Migration
             $table->unsignedBigInteger('company_employee_id');
             $table->text('suggest');
             $table->unsignedBigInteger('approval_user_id')->nullable();
-            $table->string('approval_by');
+            $table->string('approval_by')->nullable();
             $table->timestamp('approval_at')->nullable();
             $table->timestamps();
 

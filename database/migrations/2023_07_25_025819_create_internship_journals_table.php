@@ -18,7 +18,9 @@ class CreateInternshipJournalsTable extends Migration
             $table->unsignedBigInteger('internship_id');
             $table->date('date');
             $table->string('activity', 255);
+            $table->string('activity_image', 255)->nullable();
             $table->unsignedBigInteger('competency_id');
+            $table->enum('status', ['Pending', 'Approved', 'Rejected']);
             $table->unsignedBigInteger('approval_user_id')->nullable();
             $table->string('approval_by')->nullable();
             $table->timestamp('approval_at')->nullable();

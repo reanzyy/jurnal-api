@@ -59,13 +59,28 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    /**
-     * Get all of the comments for the Student
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function students(): HasMany
+    public function student()
     {
-        return $this->hasMany(Student::class);
+        return $this->hasOne(Student::class);
+    }
+
+    public static function findById($identity)
+    {
+        return self::find($identity);
+    }
+
+    public function internship()
+    {
+        return $this->hasOne(Internship::class);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function internshipJournals()
+    {
+        return $this->hasManyThrough(InternshipJournal::class, Internship::class);
     }
 }

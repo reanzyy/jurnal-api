@@ -9,7 +9,7 @@ class SchoolAdvisorController extends Controller
 {
     public function index()
     {
-        $schoolAdvisors = SchoolAdvisor::all();
+        $schoolAdvisors = SchoolAdvisor::with('user')->get();
         return response()->json(['message' => 'Success', 'data' => $schoolAdvisors]);
     }
 
