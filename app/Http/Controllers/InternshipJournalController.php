@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
-use App\Models\Internship;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\InternshipJournal;
-use Illuminate\Support\Facades\URL;
+use Carbon\Carbon;
 
 class InternshipJournalController extends Controller
 {
@@ -155,25 +153,32 @@ class InternshipJournalController extends Controller
         }
     }
 
-    public function generatePDF()
+    public function journalsCount()
     {
-        if (auth()->check()) {
-            $user = auth()->user();
-            $journals = InternshipJournal::select("internship_journals.*", "internships.user_id")
-                ->join("internships", "internships.id", "=", "internship_journals.internship_id")
-                ->where("internships.user_id", $user->id)
-                ->get();
-            $html = view('pdf.journals', compact('journals'))->render();
-
-            $pdf = Pdf::loadHTML($html);
-
-            $filename = 'internship_journals.pdf';
-
-            return $pdf->download($filename);
-        } else {
-            return response()->json(['message' => 'User not authenticated.'], 401);
+        if (!auth()->check()) {
+            return response()->json(['error' => 'User not authenticated.'], 401);
         }
+
+        $user = auth()->user();
+        $startDate = Carbon::now()->subDays(66);
+        $endDate = Carbon::now();
+
+        $journalsCount = InternshipJournal::join('internships', 'internships.id', '=', 'internship_journals.internship_id')
+            ->where('status', 'Approved')
+            ->where('internships.user_id', $user->id)
+            ->whereBetween('internship_journals.created_at', [$startDate, $endDate])
+            ->count();
+
+        $targetCount = 66;
+        $journalsNeeded = max(0, $targetCount - $journalsCount);
+
+        return response()->json([
+            'journals' => $journalsCount,
+            'journals_needed' => $journalsNeeded
+        ]);
     }
+
+
 
     public function generateDownloadLink()
     {

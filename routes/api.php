@@ -43,6 +43,7 @@ Route::put('profile/parent', [ProfileController::class, 'update_profile_parent']
 Route::get('profile/schedule-internship', [ProfileController::class, 'profile_schedule']);
 Route::put('profile/schedule-internship', [ProfileController::class, 'update_profile_schedule_internship']);
 
+Route::get('chart', [InternshipJournalController::class, 'journalsCount']);
 Route::apiResource('journals', InternshipJournalController::class);
 Route::get('generate-pdf', [InternshipJournalController::class, 'generatePDF']);
 Route::get('journal/download-link', [InternshipJournalController::class, 'generateDownloadLink']);
