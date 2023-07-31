@@ -116,21 +116,14 @@ class InformasiDudiController extends Controller
 
     public function updateOrganizationStructure(Request $request)
     {
-        $validator  = Validator::make($request->all(), [
-            "structure" => "nullable|image"
+        $request->validate([
+            'structure' => 'nullable|image|max:2048'
         ]);
 
-        if ($validator->fails()) {
-            $error = $validator->error()->all()[0];
-            return response()->json(["error" => true, "message" => $error], 422);
-        } else {
+        if (auth()->check()) {
             $user = InternshipCompany::join("internships", "internships.id", "=", "internship_companies.internship_id")
                 ->where("internships.user_id", auth()->user()->id)
                 ->first();
-
-            if (!$user) {
-                return response()->json(["message" => "Organization not found"], 404);
-            }
 
             if ($request->structure && $request->structure->isValid()) {
                 $fileName = time() . '.' . $request->structure->extension();
@@ -145,8 +138,23 @@ class InformasiDudiController extends Controller
                 'structure' => $user->structure
             ];
 
+            if (!$user) {
+                return response()->json(["message" => "Organization not found"], 404);
+            }
+
             return response()->json(["message" => "Organization structure updated successfully", "data" => $filteredData]);
+        } else {
+            return response()->json(["message" => "User not authenticated"], 401);
         }
+
+        // if ($validator->fails()) {
+        //     $error = $validator->error()->all()[0];
+        //     return response()->json(["error" => true, "message" => $error], 422);
+        // } else {
+
+
+
+        // }
     }
 
     // Company Job Title

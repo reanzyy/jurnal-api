@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 
 
@@ -61,6 +62,7 @@ class ProfileController extends Controller
         }
     }
 
+
     public function update_profile_personal(Request $request)
     {
         $request->validate([
@@ -76,45 +78,52 @@ class ProfileController extends Controller
             'photo' => 'nullable|image|max:2048',
         ]);
 
-        $user = Student::where('user_id', auth()->user()->id)->first();
 
-        if (!$user) {
-            return response()->json(["message" => "Student record not found."], 404);
+        if (auth()->check()) {
+
+            $user = Student::where('user_id', auth()->user()->id)->first();
+
+            $user->identity = $request->identity;
+            $user->name = $request->name;
+            $user->phone = $request->phone;
+            $user->birth_date = $request->birth_date;
+            $user->birth_place = $request->birth_place;
+            $user->religion = $request->religion;
+            $user->gender = $request->gender;
+            $user->address = $request->address;
+            $user->blood_type = $request->blood_type;
+
+            if ($request->photo && $request->photo->isValid()) {
+                $fileName = time() . '.' . $request->photo->extension();
+                $request->photo->move(public_path("images"), $fileName);
+                $path = "public/images/$fileName";
+                $user->photo = $path;
+            }
+            $user->update();
+
+            $filteredStudent = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'phone' => $user->phone,
+                'birth_date' => $user->birth_date,
+                'birth_place' => $user->birth_place,
+                'religion' => $user->religion,
+                'gender' => $user->gender,
+                'address' => $user->address,
+                'photo' => $user->photo,
+                'blood_type' => $user->blood_type,
+            ];
+
+            if (!$user) {
+                return response()->json(["message" => "Student record not found."], 404);
+            }
+
+            return response()->json(["message" => "Profile updated successfully", "data" => $filteredStudent]);
+        } else {
+            return response()->json(["message" => "User not authenticated"], 404);
         }
-
-        $user->identity = $request->identity;
-        $user->name = $request->name;
-        $user->phone = $request->phone;
-        $user->birth_date = $request->birth_date;
-        $user->birth_place = $request->birth_place;
-        $user->religion = $request->religion;
-        $user->gender = $request->gender;
-        $user->address = $request->address;
-        $user->blood_type = $request->blood_type;
-
-        if ($request->photo && $request->photo->isValid()) {
-            $fileName = time() . '.' . $request->photo->extension();
-            $request->photo->move(public_path("images"), $fileName);
-            $path = "public/images/$fileName";
-            $user->photo = $path;
-        }
-        $user->update();
-
-        $filteredStudent = [
-            'id' => $user->id,
-            'name' => $user->name,
-            'phone' => $user->phone,
-            'birth_date' => $user->birth_date,
-            'birth_place' => $user->birth_place,
-            'religion' => $user->religion,
-            'gender' => $user->gender,
-            'address' => $user->address,
-            'photo' => $user->photo,
-            'blood_type' => $user->blood_type,
-        ];
-
-        return response()->json(["message" => "Profile updated successfully", "data" => $filteredStudent]);
     }
+
 
     public function profile_parent()
     {
@@ -155,6 +164,7 @@ class ProfileController extends Controller
                 ]);
 
                 $student->update($validatedData);
+
                 $filteredStudent = [
                     'id' => $student->id,
                     'parent_name' => $student->parent_name,

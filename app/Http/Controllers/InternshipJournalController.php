@@ -59,13 +59,14 @@ class InternshipJournalController extends Controller
             $image = $request->file('activity_image');
             $imageName = time() . '.' . $request->activity_image->extension();
             $image->move(public_path('images'), $imageName);
+            $path = "public/images/$imageName";
 
             $journal = InternshipJournal::create([
                 'internship_id' => $request->internship_id,
                 'date' => $request->date,
                 'activity' => $request->activity,
                 'competency_id' => $request->competency_id,
-                'activity_image' => $imageName,
+                'activity_image' => $path,
                 'approval_user_id' => $request->approval_user_id,
                 'approval_by' => $request->approval_by,
                 'approval_at' => $request->approval_at,
