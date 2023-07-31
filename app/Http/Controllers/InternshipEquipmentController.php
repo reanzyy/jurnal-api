@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class InternshipEquipmentController extends Controller
 {
-    public function index()
+    public function getEquipment()
     {
         if (auth()->check()) {
             $user = auth()->user();
@@ -38,7 +38,7 @@ class InternshipEquipmentController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function storeEquipment(Request $request)
     {
         $data = $request->validate([
             "internship_id" => "required|integer|exists:internships,id",
@@ -48,7 +48,7 @@ class InternshipEquipmentController extends Controller
         ]);
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $equipment = InternshipEquipment::create($data);
 
             return response()->json(["error" => false, "message" => "Journal created successfully", "data" => $equipment]);
@@ -68,7 +68,7 @@ class InternshipEquipmentController extends Controller
         return response()->json(["error" => false, "message" => "success", "data" => $equipment]);
     }
 
-    public function update(Request $request, $id)
+    public function updateEquipment(Request $request, $id)
     {
         $data = $request->validate([
             "internship_id" => "required|integer|exists:internships,id",
@@ -84,7 +84,7 @@ class InternshipEquipmentController extends Controller
         }
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $equipment->update($data);
 
             return response()->json(["error" => false, "message" => "Equipment updated successfully", "data" => $equipment]);
@@ -93,7 +93,7 @@ class InternshipEquipmentController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroyEquipment($id)
     {
         $equipment = InternshipEquipment::find($id);
 
@@ -102,7 +102,7 @@ class InternshipEquipmentController extends Controller
         }
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $equipment->delete();
 
             return response()->json(["error" => false, "message" => "Equipment deleted successfully"]);

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class InternshipSuggestionController extends Controller
 {
-    public function index()
+    public function getCompanySuggestion()
     {
         if (auth()->check()) {
             $user = auth()->user();
@@ -44,7 +44,7 @@ class InternshipSuggestionController extends Controller
 
 
 
-    public function store(Request $request)
+    public function storeCompanySuggestion(Request $request)
     {
         $data = $request->validate([
             "internship_id" => "required|integer|exists:internships,id",
@@ -56,7 +56,7 @@ class InternshipSuggestionController extends Controller
         ]);
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $suggestion = InternshipSuggestion::create($data);
 
             return response()->json(["error" => false, "message" => "Suggestion created successfully", "data" => $suggestion]);
@@ -76,7 +76,7 @@ class InternshipSuggestionController extends Controller
         return response()->json(["error" => false, "message" => "success", "data" => $suggestion]);
     }
 
-    public function update(Request $request, $id)
+    public function updateCompanySuggestion(Request $request, $id)
     {
         $data = $request->validate([
             "internship_id" => "integer|exists:internships,id",
@@ -94,7 +94,7 @@ class InternshipSuggestionController extends Controller
         }
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $suggestion->update($data);
 
             return response()->json(["error" => false, "message" => "Suggestion updated successfully", "data" => $suggestion]);
@@ -103,7 +103,7 @@ class InternshipSuggestionController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroyCompanySuggestion($id)
     {
         $suggestion = InternshipSuggestion::find($id);
 
@@ -112,7 +112,7 @@ class InternshipSuggestionController extends Controller
         }
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $suggestion->delete();
 
             return response()->json(["error" => false, "message" => "Suggestion deleted successfully"]);

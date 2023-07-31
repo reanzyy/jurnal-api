@@ -20,6 +20,10 @@ class InformasiUmumController extends Controller
                 $internship = Internship::with('schoolYear', 'student', 'company', 'schoolAdvisor', 'companyAdvisor')
                     ->where('user_id', auth()->user()->id)
                     ->get();
+                $rules = InternshipRule::select("internship_rules.*", "school_years.name")
+                    ->join("school_years", "school_years.id", "=", "internship_rules.school_year_id")
+                    ->where("school_years.name", date('Y'))
+                    ->get();
 
                 $filteredInternship = [];
                 foreach ($internship as $data) {
@@ -39,7 +43,7 @@ class InformasiUmumController extends Controller
 
                 return response()->json(["error" => false, "message" => "success", "data" => [
                     "student" => $filteredInternship,
-                    "internship_rules" => null,
+                    "internship_rules" => $rules,
                 ]]);
             } else {
                 return response()->json(['message' => 'User not authenticated.'], 401);

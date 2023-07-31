@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class InternshipCompanyEmployeeController extends Controller
 {
-    public function index()
+    public function getCompanyEmployee()
     {
         if (auth()->check()) {
             $user = auth()->user();
@@ -40,7 +40,7 @@ class InternshipCompanyEmployeeController extends Controller
 
 
 
-    public function store(Request $request)
+    public function storeCompanyEmployee(Request $request)
     {
         $data = $request->validate([
             "internship_id" => "required|integer|exists:internships,id",
@@ -69,7 +69,7 @@ class InternshipCompanyEmployeeController extends Controller
         return response()->json(["error" => false, "message" => "success", "data" => $employee]);
     }
 
-    public function update(Request $request, $id)
+    public function updateCompanyEmployee(Request $request, $id)
     {
         $data = $request->validate([
             "internship_id" => "integer|exists:internships,id",
@@ -93,7 +93,7 @@ class InternshipCompanyEmployeeController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroyCompanyEmployee($id)
     {
         $employee = InternshipCompanyEmployee::find($id);
 

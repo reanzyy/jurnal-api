@@ -9,7 +9,10 @@ class InternshipRuleController extends Controller
 {
     public function index()
     {
-        $Rules = InternshipRule::with('schoolYear')->get();
+        $Rules = InternshipRule::select("internship_rules.*", "school_years.name")
+            ->join("school_years", "school_years.id", "=", "internship_rules.school_year_id")
+            ->where("school_years.name", date('Y'))
+            ->get();
         return response()->json(['error' => false, 'message' => 'success', 'data' => $Rules]);
     }
 

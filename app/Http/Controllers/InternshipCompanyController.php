@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class InternshipCompanyController extends Controller
 {
-    public function index()
+    public function getInternshipCompany()
     {
         if (auth()->check()) {
             $user = auth()->user();

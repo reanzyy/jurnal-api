@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class InternshipCompanyRuleController extends Controller
 {
-    public function index()
+    public function getCompanyRules()
     {
         if (auth()->check()) {
             $user = auth()->user();
@@ -38,7 +38,7 @@ class InternshipCompanyRuleController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function storeCompanyRules(Request $request)
     {
         $data = $request->validate([
             'internship_id' => 'required|integer|exists:internships,id',
@@ -47,7 +47,7 @@ class InternshipCompanyRuleController extends Controller
         ]);
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $companyRule = InternshipCompanyRule::create($data);
 
             return response()->json(['message' => 'Internship Company Rules created successfully', 'data' => $companyRule]);
@@ -67,7 +67,7 @@ class InternshipCompanyRuleController extends Controller
         return response()->json(['message' => 'Success', 'data' => $companyRule]);
     }
 
-    public function update(Request $request, $id)
+    public function updateCompanyRules(Request $request, $id)
     {
         $data = $request->validate([
             'internship_id' => 'required|integer|exists:internships,id',
@@ -82,7 +82,7 @@ class InternshipCompanyRuleController extends Controller
         }
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $companyRule->update($data);
 
             return response()->json(['message' => 'Internship Company Rules updated successfully', 'data' => $companyRule]);
@@ -91,7 +91,7 @@ class InternshipCompanyRuleController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroyCompanyRules($id)
     {
         $companyRule = InternshipCompanyRule::find($id);
 
@@ -100,7 +100,7 @@ class InternshipCompanyRuleController extends Controller
         }
 
         if (auth()->check()) {
-            auth()->user()->id;
+            auth()->user();
             $companyRule->delete();
 
             return response()->json(['message' => 'Internship Company Rules deleted successfully']);

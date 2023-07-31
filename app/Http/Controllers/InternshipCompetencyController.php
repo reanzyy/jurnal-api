@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class InternshipCompetencyController extends Controller
 {
-    public function index()
+    public function getCompetency()
     {
         if (auth()->check()) {
             $user = auth()->user();
@@ -36,7 +36,7 @@ class InternshipCompetencyController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function storeCompetency(Request $request)
     {
         $data = $request->validate([
             "internship_id" => "required|integer|exists:internships,id",
@@ -65,7 +65,7 @@ class InternshipCompetencyController extends Controller
         return response()->json(["error" => false, "message" => "success", "data" => $competency]);
     }
 
-    public function update(Request $request, $id)
+    public function updateCompetency(Request $request, $id)
     {
         $data = $request->validate([
             "internship_id" => "integer|exists:internships,id",
@@ -89,7 +89,7 @@ class InternshipCompetencyController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroyCompetency($id)
     {
         $competency = InternshipCompetency::find($id);
 
