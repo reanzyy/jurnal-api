@@ -30,7 +30,7 @@ class CreateStudentsTable extends Migration
             $table->string('parent_name', 255)->nullable();
             $table->string('parent_phone', 255)->nullable();
             $table->string('parent_address', 255)->nullable();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id');
             $table->string('password_hint', 255)->nullable();
             $table->timestamps();
 
